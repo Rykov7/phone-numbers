@@ -106,8 +106,8 @@ class Analyzer:
     @staticmethod
     def _save_numbers(numbs, filename):
         if numbs:
-            with open(filename, 'w', newline='') as fixed_file:
-                writer = csv.writer(fixed_file)
+            with open(filename, 'w', newline='') as file:
+                writer = csv.writer(file)
                 for numb in numbs:
                     writer.writerow([numb])
             print(f'{bg("blue")}[СОХРАНЕНО] {len(numbs)} шт. в файле {filename}{attr("reset")}')
@@ -125,4 +125,3 @@ if __name__ == '__main__':
     analyzer.result()
     analyzer.save_everything()
 
-    input()
