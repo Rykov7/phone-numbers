@@ -20,7 +20,6 @@ class Analyzer:
     def __init__(self):
         self.win_with = 100
         self.greeting()
-        self.empty_counter = 0
         self.error_numbers, self.dubbed, self.valid_numbers = [], [], []
         self.filename = self.find_new()
         self.all_numbers = self.open_csv()
@@ -58,16 +57,10 @@ class Analyzer:
 
     def open_csv(self):
         with open(self.filename, 'r', newline='') as csvfile:
-            return list(csv.reader(csvfile))  # Читаем все номера из файла.
+            return [i[0] for i in list(csv.reader(csvfile)) if i]
 
     def analyze(self):
-        for row in self.all_numbers:
-            if row:
-                number = row[0]
-            else:
-                logging.debug(f'{bg("red")}Пустая строка!{attr("reset")}')
-                self.empty_counter += 1
-                continue
+        for number in self.all_numbers:
             if not number.isdigit():
                 logging.debug(f'{bg("red")}{number}{attr("reset")} удаление лишних символов. ')
                 number = number.translate(TRANSLATION)  # Убираем нецифровые символы.
@@ -95,10 +88,9 @@ class Analyzer:
         errors = len(self.error_numbers)         # Некорректные номера
         valid_num = len(self.valid_numbers)      # Валидные уникальные номера
 
-        print(f'\nИз {total} удалено {errors + len(self.dubbed) + self.empty_counter} шт.')
+        print(f'\nИз {total} удалено {errors + len(self.dubbed)}  шт.')
         print(f'  ├ некорректных: {errors}')
         print(f'  ├ дубликатов: {len(self.dubbed)}')
-        print(f'  └ пустых строк: {self.empty_counter}')
 
         print(f'\nИТОГ')
         print(f'  └ КАЧЕСТВО: {round(valid_num/(total/100), 2)}% ({valid_num})\n')
