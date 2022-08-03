@@ -3,7 +3,7 @@ import csv
 import os
 import logging
 from pathlib import Path
-from colored import bg, attr
+from colored import bg, fg, attr
 from config import LOG_MODE
 
 # Формат файла (сделать вручную, если не соответствует):
@@ -18,7 +18,7 @@ TRANSLATION = str.maketrans('', '', '() -,.-+')  # Из номеров удал�
 
 class Analyzer:
     def __init__(self):
-        self.win_with = 100
+        self.win_with = 79
         self.greeting()
         self.error_numbers, self.dubbed, self.valid_numbers = [], [], []
         self.filename = self.find_new()
@@ -27,7 +27,7 @@ class Analyzer:
         self.result_dir = self.filename[:-4] + '_[RESULT]'
 
     def greeting(self):
-        print('fix_numbers.py'.rjust(self.win_with))
+        print('ИСПРАВЛЯТОР'.rjust(self.win_with))
         print('Приводит телефонные номера к формату 79XXXXXXXX'.rjust(self.win_with))
         print()
 
@@ -49,35 +49,34 @@ class Analyzer:
 
         print("CSV в текущей директории: ")
         for file in all_files:
-            print(f'{all_files.index(file)+1} - {str(file)}')
-
-        choose = self._which_file(f'Какой файл проверять? (1-{len(all_files)}): ', len(all_files))
+            print(f'\t{all_files.index(file)+1} - {str(file)}')
+        print()
+        choose = self._which_file(f'Выберите файл для обработки (1-{len(all_files)}): ', len(all_files))
         print()
         return str(all_files[choose-1])
 
     def open_csv(self):
-        with open(self.filename, 'r', newline='') as csvfile:
+        with open(self.filename, 'r', newline='', encoding='utf-8') as csvfile:
             return [i[0] for i in list(csv.reader(csvfile)) if i]
 
     def analyze(self):
         for number in self.all_numbers:
             if not number.isdigit():
-                logging.debug(f'{bg("red")}{number}{attr("reset")} удаление лишних символов. ')
+                logging.debug(f'{fg("red")}{number}{attr("reset")} удаление лишних символов. ')
                 number = number.translate(TRANSLATION)  # Убираем нецифровые символы.
             if number.startswith('8') and len(number) == 11:
-                logging.debug(f'{bg("red")}{number[:1]}{attr("reset")}{number[1:]} исправление 8 на 7.')
+                logging.debug(f'{fg("red")}{number[:1]}{attr("reset")}{number[1:]} исправление 8 на 7.')
                 number = '7' + number[1:]
             elif number.startswith('9') and len(number) == 10:
                 logging.debug(f'{number} добавляю приставку 7.')
                 number = f'7' + number
-
             elif len(number) < 10:
                 self.error_numbers.append(number)
-                logging.info(f"{bg('red')}Невалидный номер {number}{attr('reset')}")
+                logging.info(f"{fg('red')}Невалидный номер {number}{attr('reset')}")
                 continue
             self.numbers.append(number)
             if self.numbers.count(number) >= 2:
-                logging.info(f"{bg('red')}Дубликат! {number}{attr('reset')}")
+                logging.info(f"{fg('red')}Дубликат! {number}{attr('reset')}")
                 self.dubbed.append(number)
 
     def result(self):
@@ -98,7 +97,7 @@ class Analyzer:
     @staticmethod
     def _save_numbers(numbs, filename):
         if numbs:
-            with open(filename, 'w', newline='') as file:
+            with open(filename, 'w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
                 for numb in numbs:
                     writer.writerow([numb])
@@ -106,9 +105,9 @@ class Analyzer:
 
     def save_everything(self):
         os.makedirs(self.result_dir, exist_ok=True)
-        self._save_numbers(self.valid_numbers, self.result_dir + os.sep + self.filename[:-4] + '_[VALID].csv')
-        self._save_numbers(set(self.dubbed), self.result_dir + os.sep + self.filename[:-4] + '_[DUBBED].csv')
-        self._save_numbers(self.error_numbers, self.result_dir + os.sep + self.filename[:-4] + '_[ERRS].csv')
+        self._save_numbers(self.valid_numbers, self.result_dir + os.sep + self.filename[:-4] + '[valid].csv')
+        self._save_numbers(set(self.dubbed), self.result_dir + os.sep + self.filename[:-4] + '[dubbed].csv')
+        self._save_numbers(self.error_numbers, self.result_dir + os.sep + self.filename[:-4] + '[errs].csv')
 
 
 if __name__ == '__main__':
