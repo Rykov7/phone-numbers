@@ -14,7 +14,7 @@ logging.basicConfig(level=LOG_MODE, format='%(levelname)s - %(message)s')
 class Comparer(Analyzer):
     def __init__(self):
         super().__init__()
-        self.used_location = 'used'
+        self.used_location = 'Used'
         self.used_tables = self.find_used()
         self.all_dubbed = []
         self.full_difference = -1111
@@ -24,7 +24,7 @@ class Comparer(Analyzer):
 
     def greeting(self):
         print('СРАВНИВАТЕЛЬ'.rjust(self.win_with))
-        print('Сравнивает новую таблицу со старыми в папке "used"'.rjust(self.win_with))
+        print('Сравнивает новую таблицу со старыми в папке "Used"'.rjust(self.win_with))
         print()
 
     def find_used(self):
@@ -81,13 +81,6 @@ def color_range(numb):
         print(fg("orange_red_1"), end='')
     else:
         print(fg("red"), end='')
-
-
-def russian_flag():
-    print()
-    print(bg("white") + ' '*100 + attr("reset"))
-    print(bg("blue") + ' '*100 + attr("reset"))
-    print(bg("red") + ' '*100 + attr("reset"))
 
 
 if __name__ == '__main__':

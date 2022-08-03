@@ -5,3 +5,4 @@ import logging
 # Выбор режима логирования:
 # DEBUG (исправленные + INFO), INFO (некорректные и дубли), WARNING (выкл.).
 LOG_MODE = logging.WARNING
+WIN_WIDTH = 79

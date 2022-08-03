@@ -4,7 +4,7 @@ import os
 import logging
 from pathlib import Path
 from colored import bg, fg, attr
-from config import LOG_MODE
+from config import LOG_MODE, WIN_WIDTH
 
 # Формат файла (сделать вручную, если не соответствует):
 # 1) Формат: CSV
@@ -18,7 +18,7 @@ TRANSLATION = str.maketrans('', '', '() -,.-+')  # Из номеров удал�
 
 class Analyzer:
     def __init__(self):
-        self.win_with = 79
+        self.win_with = WIN_WIDTH
         self.greeting()
         self.error_numbers, self.dubbed, self.valid_numbers = [], [], []
         self.filename = self.find_new()
