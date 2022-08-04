@@ -52,12 +52,15 @@ class Fixer:
         """ Ищет все CSV в текущей директории. """
         all_files = list(Path().glob('*.csv'))
 
-        print("CSV в текущей директории: ")
+        print("CSV в текущей директории:")
         for file in all_files:
-            print(f'\t{all_files.index(file)+1} - {str(file)}')
+            file_option_string = f'  {all_files.index(file)+1}. {str(file)}{fg("#444")}'
+            file_size_string = f'{attr("reset")}{int(os.path.getsize(file) / 1024)} KB'
+            print(f'{file_option_string}'.ljust(self.win_with-len(file_size_string)+15, '.'), end='')
+            print(f'{file_size_string}')
         print()
         choose = self._which_file(f'Выберите файл для обработки (1-{len(all_files)}): ', len(all_files))
-        print()
+
         return str(all_files[choose-1])
 
     def open_csv(self):
@@ -100,14 +103,16 @@ class Fixer:
         valid_num = len(self.valid_numbers)      # Валидные уникальные номера
         print()
         self.color_range(round(100 - valid_num/(total/100)))
-        print('[ ОТЧЁТ ]'.center(self.win_with, '-'))
+        print('[ РЕЗУЛЬТАТ ИСПРАВЛЕНИЙ ]'.center(self.win_with, '.'))
 
-        print(f'\nИз {total} удалено {errors + len(self.dubbed)}  шт.')
+        print(f'\nУДАЛЕНО {errors + len(self.dubbed)} из {total}')
         print(f'  ├ некорректных: {errors}')
         print(f'  └ повторов: {len(self.dubbed)}')
 
         print(f'\nИТОГ')
-        print(f'  └ КАЧЕСТВО: {int(valid_num/(total/100))}% ({valid_num}){attr("reset")}\n')
+        print(f'  └ КАЧЕСТВО: {int(valid_num/(total/100))}% ({valid_num})\n')
+        print(''.center(self.win_with, '-'))
+        print(attr("reset"))
 
     @staticmethod
     def _save_numbers(numbs, filename):
@@ -123,36 +128,37 @@ class Fixer:
         """ Сохраняет все файлы. """
         os.makedirs(self.result_dir, exist_ok=True)
         self._save_numbers(self.valid_numbers, self.result_dir + os.sep + self.filename[:-4] + '[valid].csv')
-        self._save_numbers(set(self.dubbed), self.result_dir + os.sep + self.filename[:-4] + '[dubbed].csv')
-        self._save_numbers(self.error_numbers, self.result_dir + os.sep + self.filename[:-4] + '[errs].csv')
+        self._save_numbers(set(self.dubbed), self.result_dir + os.sep + self.filename[:-4] + '[dubs].csv')
+        self._save_numbers(self.error_numbers, self.result_dir + os.sep + self.filename[:-4] + '[junk].csv')
 
     @staticmethod
     def color_range(numb):
         """ Определяет цвет текста, в зависимости от процента совпадений. """
         if numb < 4:
-            print(fg("green"), end='')
+            print(fg("#52a7563"), end='')
         elif numb < 30:
             print(fg("yellow"), end='')
         elif numb < 60:
             print(fg("orange_red_1"), end='')
         else:
-            print(fg("red"), end='')
+            print(fg("#e51c24"), end='')
 
     def russian_flag(self):
         """ Печатает флаг России. """
         print()
         print(bg("white") + fg("white") + 'R' * self.win_with + attr("reset"))
         print(bg("blue") + fg("blue") + 'U' * self.win_with + attr("reset"))
-        print(bg("red") + fg("red") + 'S' * self.win_with + attr("reset"))
+        print(bg("#e51c24") + fg("red") + 'S' * self.win_with + attr("reset"))
 
 
 if __name__ == '__main__':
     fixer = Fixer()
     fixer.fix()
     fixer.result()
-    fixer.save_everything()
+    fixer.save_everything()    # Сохраняет изображение с графиком.
+
+    make_plot(fixer.result_dir + os.sep + fixer.filename[:-4] + '.png', fixer.filename,
+              len(fixer.valid_numbers), len(fixer.dubbed), len(fixer.error_numbers))
     fixer.russian_flag()
 
-    # Сохраняет изображение с графиком.
-    make_plot(fixer.result_dir + os.sep + fixer.filename[:-4], fixer.filename,
-              len(fixer.valid_numbers), len(fixer.dubbed), len(fixer.error_numbers))
+

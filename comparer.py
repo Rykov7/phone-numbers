@@ -26,7 +26,7 @@ class Comparer(Fixer):
     def greeting(self):
         """ Приветствие программы. """
         print('СРАВНИВАТЕЛЬ'.rjust(self.win_with))
-        print('Сравнивает новую таблицу со старыми в папке "Used"'.rjust(self.win_with))
+        print('Сравнивает выбранную таблицу со всеми таблицами в папке "Used"'.rjust(self.win_with))
         print()
 
     def find_used(self):
@@ -61,14 +61,16 @@ class Comparer(Fixer):
         """ Печатает общий результат. """
         self.table_eq = int((len(self.all_dubbed) / (len(self.all_numbers)/100)))
         self.color_range(self.table_eq)
-        print('[ РЕЗУЛЬТАТ ]'.center(self.win_with, '.'))
-        print(f'ОБЩЕЕ СХОДСТВО: {self.table_eq}% ({len(self.all_dubbed)}/{len(self.all_numbers)}){attr("reset")}')
+        print('[ РЕЗУЛЬТАТ СРАВНЕНИЯ ]'.center(self.win_with, '.'))
+        print(f'\nОБЩЕЕ СХОДСТВО: {self.table_eq}% ({len(self.all_dubbed)}/{len(self.all_numbers)})\n')
+        print(''.center(self.win_with, '-'))
+        print(attr("reset"))
 
     def save_everything(self):
         """ Сохраняет все CSV-файлы. """
         os.makedirs(self.result_dir, exist_ok=True)
-        self._save_numbers(self.all_dubbed, self.result_dir + os.sep + self.filename[:-4] + '[DUBBED].csv')
         self._save_numbers(self.all_valid, self.result_dir + os.sep + self.filename[:-4] + '[VALID].csv')
+        self._save_numbers(self.all_dubbed, self.result_dir + os.sep + self.filename[:-4] + '[DUBS].csv')
 
 
 if __name__ == '__main__':
@@ -76,8 +78,8 @@ if __name__ == '__main__':
     comparer.compare()
     comparer.overall()
     comparer.save_everything()
-    comparer.russian_flag()
 
     # Сохраняет изображение с графиком.
-    make_plot(comparer.result_dir + os.sep + comparer.filename[:-4], comparer.filename,
+    make_plot(comparer.result_dir + os.sep + comparer.filename[:-4] + '.png', comparer.filename,
               len(comparer.all_valid), len(comparer.all_dubbed))
+    comparer.russian_flag()
