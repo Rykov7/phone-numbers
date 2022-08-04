@@ -8,7 +8,7 @@ from fixer import Fixer
 from config import LOG_MODE
 from pie import make_plot
 
-logging.basicConfig(level=LOG_MODE, format='%(levelname)s - %(message)s')
+logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("reset")}')
 
 
 class Comparer(Fixer):
@@ -48,7 +48,7 @@ class Comparer(Fixer):
             for used_number in used_numbers:
                 if used_number in self.all_numbers:
                     dubbed.append(used_number)
-                    logging.info(f'{bg("red")}{used_number} есть в старой таблице!{attr("reset")}')
+                    logging.warning(f'{used_number} есть в старой таблице!')
                     self.all_dubbed.append(used_number)
                     if used_number in self.all_valid:
                         self.all_valid.remove(used_number)

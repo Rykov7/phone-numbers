@@ -1,4 +1,4 @@
-""" fixer.py - Приводит телефонные номера к формату 79XXXXXXXX """
+""" fixer.py - Приводит телефонные номера к формату 79XXXXXXXXX """
 import csv
 import os
 import logging
@@ -13,7 +13,7 @@ from pie import make_plot
 # 3) Нет заголовков (1 строка содержит данные, а не название колонки)
 
 
-logging.basicConfig(level=LOG_MODE, format='%(levelname)s - %(message)s')
+logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("reset")}')
 TRANSLATION = str.maketrans('', '', '() -,.-+')  # Из номеров удаляются перечисленные символы.
 
 
@@ -31,7 +31,7 @@ class Fixer:
     def greeting(self):
         """ Приветствие программы. """
         print('ИСПРАВЛЯТОР'.rjust(self.win_with))
-        print('Приводит телефонные номера к формату 79XXXXXXXX'.rjust(self.win_with))
+        print('Приводит телефонные номера к формату 79XXXXXXXXX'.rjust(self.win_with))
         print()
 
     @staticmethod
@@ -65,25 +65,25 @@ class Fixer:
         with open(self.filename, 'r', newline='', encoding='utf-8') as csvfile:
             return [i[0] for i in list(csv.reader(csvfile)) if i]
 
-    def analyze(self):
+    def fix(self):
         """ Анализирует и исправляет номера. """
         for number in self.all_numbers:
             if not number.isdigit():
-                logging.debug(f'{fg("red")}{number}{attr("reset")} удаление лишних символов. ')
+                logging.info(f'{number} удалил лишние символы. ')
                 number = number.translate(TRANSLATION)  # Убираем нецифровые символы.
             if number.startswith('8') and len(number) == 11:
-                logging.debug(f'{fg("red")}{number[:1]}{attr("reset")}{number[1:]} исправление 8 на 7.')
+                logging.info(f'{number} исправил 8 на 7.')
                 number = '7' + number[1:]
             elif number.startswith('9') and len(number) == 10:
-                logging.debug(f'{number} добавляю приставку 7.')
+                logging.info(f'{number} добавил 7 перед номером.')
                 number = f'7' + number
             elif len(number) < 10:
                 self.error_numbers.append(number)
-                logging.info(f"{fg('red')}Невалидный номер {number}{attr('reset')}")
+                logging.warning(f"Нашёл некорректную запись {number}")
                 continue
             self.numbers.append(number)
             if self.numbers.count(number) >= 2:
-                logging.info(f"{fg('red')}Дубликат! {number}{attr('reset')}")
+                logging.warning(f"Нашёл дубликат {number}")
                 self.dubbed.append(number)
 
     def result(self):
@@ -122,10 +122,10 @@ class Fixer:
 
 if __name__ == '__main__':
     fixer = Fixer()
-    fixer.analyze()
+    fixer.fix()
     fixer.result()
     fixer.save_everything()
 
-    # Сохраняет график
+    # Сохраняет изображение с графиком.
     make_plot(fixer.result_dir + os.sep + fixer.filename[:-4], fixer.filename,
               len(fixer.valid_numbers), len(fixer.dubbed), len(fixer.error_numbers))
