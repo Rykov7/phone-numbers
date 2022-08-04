@@ -1,4 +1,4 @@
-""" comparer.py - Сравнивает новую таблицу номеров со старыми. """
+""" Модуль comparer.py - Сравнивает новую таблицу номеров со старыми. """
 import os
 import logging
 from pathlib import Path
@@ -18,8 +18,6 @@ class Comparer(Fixer):
         self.used_location = 'Used'  # Папка со старыми CSV.
         self.used_tables = self.find_used()
         self.all_dubbed = []
-        self.table_eq = 0
-        self.full_difference = 0
         self.all_valid = self.all_numbers[:]
         self.result_dir = '[COMPARER]'
 
@@ -32,7 +30,7 @@ class Comparer(Fixer):
     def find_used(self):
         """ Ищет CSV в "Used" для сравнения с проверяемым CSV. """
         used_tables = []
-        for folder_name, subfolders, filenames in os.walk(Path(self.used_location)):
+        for folder_name, sub_folders, filenames in os.walk(Path(self.used_location)):
             for file in Path(folder_name).glob('*.csv'):
                 used_tables.append(file)
         return used_tables
@@ -59,10 +57,10 @@ class Comparer(Fixer):
 
     def overall(self):
         """ Печатает общий результат. """
-        self.table_eq = int((len(self.all_dubbed) / (len(self.all_numbers)/100)))
-        self.color_range(self.table_eq)
+        table_eq = int((len(self.all_dubbed) / (len(self.all_numbers)/100)))
+        self.color_range(table_eq)
         print('[ РЕЗУЛЬТАТ СРАВНЕНИЯ ]'.center(self.win_with, '.'))
-        print(f'\nОБЩЕЕ СХОДСТВО: {self.table_eq}% ({len(self.all_dubbed)}/{len(self.all_numbers)})\n')
+        print(f'\nОБЩЕЕ СХОДСТВО: {table_eq}% ({len(self.all_dubbed)}/{len(self.all_numbers)})\n')
         print(''.center(self.win_with, '-'))
         print(attr("reset"))
 

@@ -1,4 +1,4 @@
-""" fixer.py - Приводит телефонные номера к формату 79XXXXXXXXX """
+""" Модуль fixer.py - Приводит телефонные номера к формату 79XXXXXXXXX """
 import csv
 import os
 import re
@@ -19,7 +19,6 @@ class Fixer:
         self.error_numbers, self.dubbed, self.valid_numbers = [], [], []
         self.filename = self.find_new()
         self.all_numbers = self.open_csv()
-        self.numbers = []
         self.result_dir = '[FIXER]'
 
     def greeting(self):
@@ -50,6 +49,7 @@ class Fixer:
         for file in all_files:
             file_option_string = f'  {all_files.index(file)+1}. {str(file)}{fg("#444")}'
             file_size_string = f'{attr("reset")}{int(os.path.getsize(file) / 1024)} KB'
+            # Прибавляем 15 из-за символов смены цвета.
             print(f'{file_option_string}'.ljust(self.win_with-len(file_size_string)+15, '.'), end='')
             print(f'{file_size_string}')
         print()
@@ -153,5 +153,3 @@ if __name__ == '__main__':
     make_plot(fixer.result_dir + os.sep + fixer.filename[:-4] + '.png', fixer.filename,
               len(fixer.valid_numbers), len(fixer.dubbed), len(fixer.error_numbers))
     fixer.russian_flag()
-
-

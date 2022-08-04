@@ -1,7 +1,11 @@
+""" Модуль pie.py построение круговой диаграммы. """
+
+
 def make_plot(filename, title, valid, dubbed, errors=None):
+    """ Строит круговую диаграмму и сохраняет в PNG. """
     import matplotlib.pyplot as plt
     from colored import bg, attr
-    """ Строит круговой график и сохраняет в PNG. """
+
     # data
     if errors is not None:
         x = [valid, dubbed, errors]
