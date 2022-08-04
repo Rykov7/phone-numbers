@@ -1,20 +1,14 @@
 """ fixer.py - Приводит телефонные номера к формату 79XXXXXXXXX """
 import csv
 import os
+import re
 import logging
 from pathlib import Path
 from colored import bg, fg, attr
 from config import LOG_MODE, WIN_WIDTH
 from pie import make_plot
 
-# Формат файла (сделать вручную, если не соответствует):
-# 1) Формат: CSV
-# 2) Номера находятся в колонке А
-# 3) Нет заголовков (1 строка содержит данные, а не название колонки)
-
-
 logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("reset")}')
-TRANSLATION = str.maketrans('', '', '() -,.-+*')  # Из номеров удаляются перечисленные символы.
 
 
 class Fixer:
@@ -60,7 +54,6 @@ class Fixer:
             print(f'{file_size_string}')
         print()
         choose = self._which_file(f'Выберите файл для обработки (1-{len(all_files)}): ', len(all_files))
-
         return str(all_files[choose-1])
 
     def open_csv(self):
@@ -73,7 +66,9 @@ class Fixer:
         """ Исправляет телефонный номер до формата 79XXXXXXXXX. """
         if not number.isdigit():
             logging.info(f'{number} удалил лишние символы. ')
-            number = number.translate(TRANSLATION)  # Убираем нецифровые символы.
+            for char in number:
+                if not char.isdigit():
+                    number = number.replace(char, '')  # Убираем нецифровые символы.
         if number.startswith('89') and len(number) == 11:
             logging.info(f'{number} исправил 8 на 7.')
             return '7' + number[1:]
@@ -86,7 +81,8 @@ class Fixer:
         """ Анализирует и исправляет номера. """
         for number in self.all_numbers:
             number = self.correct_number(number)
-            if len(number) != 11 or not number.startswith('79') or not number.isdigit():
+            if len(number) != 11 or not number.startswith('79') or not number.isdigit() or \
+                    re.search(r'(\d)\1{6}', number):
                 logging.warning(f"Нашёл некорректную запись {number}")
                 self.error_numbers.append(number)
                 continue
@@ -104,13 +100,10 @@ class Fixer:
         print()
         self.color_range(round(100 - valid_num/(total/100)))
         print('[ РЕЗУЛЬТАТ ИСПРАВЛЕНИЙ ]'.center(self.win_with, '.'))
-
         print(f'\nУДАЛЕНО {errors + len(self.dubbed)} из {total}')
-        print(f'  ├ некорректных: {errors}')
-        print(f'  └ повторов: {len(self.dubbed)}')
-
-        print(f'\nИТОГ')
-        print(f'  └ КАЧЕСТВО: {int(valid_num/(total/100))}% ({valid_num})\n')
+        print(f'  ├ повторы: {len(self.dubbed)}')
+        print(f'  └ мусор: {errors}')
+        print(f'\nКАЧЕСТВО: {int(valid_num/(total/100))}% ({valid_num})\n')
         print(''.center(self.win_with, '-'))
         print(attr("reset"))
 
@@ -127,7 +120,7 @@ class Fixer:
     def save_everything(self):
         """ Сохраняет все файлы. """
         os.makedirs(self.result_dir, exist_ok=True)
-        self._save_numbers(self.valid_numbers, self.result_dir + os.sep + self.filename[:-4] + '[valid].csv')
+        self._save_numbers(sorted(self.valid_numbers), self.result_dir + os.sep + self.filename[:-4] + '[valid].csv')
         self._save_numbers(set(self.dubbed), self.result_dir + os.sep + self.filename[:-4] + '[dubs].csv')
         self._save_numbers(self.error_numbers, self.result_dir + os.sep + self.filename[:-4] + '[junk].csv')
 
