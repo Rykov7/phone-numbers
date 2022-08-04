@@ -89,18 +89,20 @@ class Fixer:
     def result(self):
         """ Выводит ОТЧЁТ со статистикой в текстовом виде. """
         self.valid_numbers = set(self.numbers)
-        print()
-        print('[ ОТЧЁТ ]'.center(self.win_with, '-'))
+
         total = len(self.all_numbers)
         errors = len(self.error_numbers)         # Некорректные номера
         valid_num = len(self.valid_numbers)      # Валидные уникальные номера
+        print()
+        self.color_range(round(100 - valid_num/(total/100)))
+        print('[ ОТЧЁТ ]'.center(self.win_with, '-'))
 
         print(f'\nИз {total} удалено {errors + len(self.dubbed)}  шт.')
         print(f'  ├ некорректных: {errors}')
-        print(f'  ├ дубликатов: {len(self.dubbed)}')
+        print(f'  └ дубликатов: {len(self.dubbed)}')
 
         print(f'\nИТОГ')
-        print(f'  └ КАЧЕСТВО: {round(valid_num/(total/100), 2)}% ({valid_num})\n')
+        print(f'  └ КАЧЕСТВО: {int(valid_num/(total/100))}% ({valid_num}){attr("reset")}\n')
 
     @staticmethod
     def _save_numbers(numbs, filename):
@@ -119,12 +121,32 @@ class Fixer:
         self._save_numbers(set(self.dubbed), self.result_dir + os.sep + self.filename[:-4] + '[dubbed].csv')
         self._save_numbers(self.error_numbers, self.result_dir + os.sep + self.filename[:-4] + '[errs].csv')
 
+    @staticmethod
+    def color_range(numb):
+        """ Определяет цвет текста, в зависимости от процента совпадений. """
+        if numb < 5:
+            print(fg("green"), end='')
+        elif numb < 20:
+            print(fg("yellow"), end='')
+        elif numb < 50:
+            print(fg("orange_red_1"), end='')
+        else:
+            print(fg("red"), end='')
+
+    def russian_flag(self):
+        """ Печатает флаг России. """
+        print()
+        print(bg("white") + fg("white") + 'R' * self.win_with + attr("reset"))
+        print(bg("blue") + fg("blue") + 'U' * self.win_with + attr("reset"))
+        print(bg("red") + fg("red") + 'S' * self.win_with + attr("reset"))
+
 
 if __name__ == '__main__':
     fixer = Fixer()
     fixer.fix()
     fixer.result()
     fixer.save_everything()
+    fixer.russian_flag()
 
     # Сохраняет изображение с графиком.
     make_plot(fixer.result_dir + os.sep + fixer.filename[:-4], fixer.filename,

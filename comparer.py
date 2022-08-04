@@ -3,7 +3,7 @@ import os
 import logging
 from pathlib import Path
 import csv
-from colored import bg, fg, attr
+from colored import fg, attr
 from fixer import Fixer
 from config import LOG_MODE
 from pie import make_plot
@@ -48,20 +48,19 @@ class Comparer(Fixer):
             for used_number in used_numbers:
                 if used_number in self.all_numbers:
                     dubbed.append(used_number)
-                    logging.warning(f'{used_number} есть в старой таблице!')
+                    logging.warning(f'Нашёл дубль {used_number}!')
                     self.all_dubbed.append(used_number)
                     if used_number in self.all_valid:
                         self.all_valid.remove(used_number)
 
             curr_table_eq = round((len(dubbed) / (len(self.all_numbers) / 100)), 2)
-            color_range(curr_table_eq)
-
+            self.color_range(curr_table_eq)
             print(f'  └ СХОДСТВО: {curr_table_eq}% ({len(dubbed)}/{len(self.all_numbers)})\n{attr("reset")}')
 
     def overall(self):
         """ Печатает общий результат. """
-        self.table_eq = round((len(self.all_dubbed) / (len(self.all_numbers)/100)), 2)
-        color_range(self.table_eq)
+        self.table_eq = int((len(self.all_dubbed) / (len(self.all_numbers)/100)))
+        self.color_range(self.table_eq)
         print('[ РЕЗУЛЬТАТ ]'.center(self.win_with, '.'))
         print(f'ОБЩЕЕ СХОДСТВО: {self.table_eq}% ({len(self.all_dubbed)}/{len(self.all_numbers)}){attr("reset")}')
 
@@ -71,32 +70,14 @@ class Comparer(Fixer):
         self._save_numbers(self.all_dubbed, self.result_dir + os.sep + self.filename[:-4] + '[DUBBED].csv')
         self._save_numbers(self.all_valid, self.result_dir + os.sep + self.filename[:-4] + '[VALID].csv')
 
-    def russian_flag(self):
-        """ Печатает флаг России. """
-        print()
-        print(bg("white") + fg("white") + 'R' * self.win_with + attr("reset"))
-        print(bg("blue") + fg("blue") + 'U' * self.win_with + attr("reset"))
-        print(bg("red") + fg("red") + 'S' * self.win_with + attr("reset"))
-
-
-def color_range(numb):
-    """ Определяет цвет текста, в зависимости от процента совпадений. """
-    if numb < 5:
-        print(fg("green"), end='')
-    elif numb < 20:
-        print(fg("yellow"), end='')
-    elif numb < 50:
-        print(fg("orange_red_1"), end='')
-    else:
-        print(fg("red"), end='')
-
 
 if __name__ == '__main__':
     comparer = Comparer()
     comparer.compare()
     comparer.overall()
     comparer.save_everything()
-
     comparer.russian_flag()
+
+    # Сохраняет изображение с графиком.
     make_plot(comparer.result_dir + os.sep + comparer.filename[:-4], comparer.filename,
               len(comparer.all_valid), len(comparer.all_dubbed))

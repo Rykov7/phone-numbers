@@ -3,6 +3,6 @@ import logging
 
 
 # Выбор режима логирования:
-# INFO (исправления + то что в WARNING), WARNING (дубли и ошибки). CRITICAL (выкл.)
-LOG_MODE = logging.WARNING
+# INFO (исправления + то что в WARNING), WARNING (дубли и ошибки). disable (выкл.)
+LOG_MODE = logging.disable()
 WIN_WIDTH = 79
