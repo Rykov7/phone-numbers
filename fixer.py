@@ -1,4 +1,4 @@
-""" fix_numbers.py - Приводит телефонные номера к формату 79XXXXXXXX """
+""" fixer.py - Приводит телефонные номера к формату 79XXXXXXXX """
 import csv
 import os
 import logging
@@ -10,7 +10,7 @@ from pie import make_plot
 # Формат файла (сделать вручную, если не соответствует):
 # 1) Формат: CSV
 # 2) Номера находятся в колонке А
-# 3) Нет заголовков (1 строка содержит данные, а не название колонки)""")
+# 3) Нет заголовков (1 строка содержит данные, а не название колонки)
 
 
 logging.basicConfig(level=LOG_MODE, format='%(levelname)s - %(message)s')
@@ -26,7 +26,7 @@ class Fixer:
         self.filename = self.find_new()
         self.all_numbers = self.open_csv()
         self.numbers = []
-        self.result_dir = self.filename[:-4] + '_[FIXED]'
+        self.result_dir = '[FIXER]'
 
     def greeting(self):
         """ Приветствие программы. """
@@ -114,10 +114,10 @@ class Fixer:
 
     def save_everything(self):
         """ Сохраняет все файлы. """
-        # os.makedirs(self.result_dir, exist_ok=True)
-        self._save_numbers(self.valid_numbers, os.sep + self.filename[:-4] + '[valid].csv')
-        self._save_numbers(set(self.dubbed), os.sep + self.filename[:-4] + '[dubbed].csv')
-        self._save_numbers(self.error_numbers, os.sep + self.filename[:-4] + '[errs].csv')
+        os.makedirs(self.result_dir, exist_ok=True)
+        self._save_numbers(self.valid_numbers, self.result_dir + os.sep + self.filename[:-4] + '[valid].csv')
+        self._save_numbers(set(self.dubbed), self.result_dir + os.sep + self.filename[:-4] + '[dubbed].csv')
+        self._save_numbers(self.error_numbers, self.result_dir + os.sep + self.filename[:-4] + '[errs].csv')
 
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@ from matplotlib import rcParams
 
 
 def make_plot(filename, title, valid, dubbed, errors=0):
+    """ Строит круговой график и сохраняет в PNG. """
     # data
     x = [valid, dubbed, errors]
     valid_percent = round(valid / (sum(x) / 100))

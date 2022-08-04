@@ -1,5 +1,4 @@
-""" compare.py - Сравнивает новую таблицу номеров со старыми. """
-
+""" comparer.py - Сравнивает новую таблицу номеров со старыми. """
 import os
 import logging
 from pathlib import Path
@@ -13,16 +12,16 @@ logging.basicConfig(level=LOG_MODE, format='%(levelname)s - %(message)s')
 
 
 class Comparer(Fixer):
-    """ Сравниватель. Определяет все атрибуты и методы. """
+    """ Сравниватель. """
     def __init__(self):
         super().__init__()
-        self.used_location = 'Used'
+        self.used_location = 'Used'  # Папка со старыми CSV.
         self.used_tables = self.find_used()
         self.all_dubbed = []
-        self.full_difference = -1111
-        self.result_dir = '[COMPARER_RESULT]'
-        self.all_valid = self.all_numbers[:]
         self.table_eq = 0
+        self.full_difference = 0
+        self.all_valid = self.all_numbers[:]
+        self.result_dir = '[COMPARER]'
 
     def greeting(self):
         """ Приветствие программы. """
@@ -68,9 +67,9 @@ class Comparer(Fixer):
 
     def save_everything(self):
         """ Сохраняет все CSV-файлы. """
-        # os.makedirs(self.result_dir, exist_ok=True)
-        self._save_numbers(self.all_dubbed, self.filename[:-4] + '[ALL_DUBBED].csv')
-        self._save_numbers(self.all_valid, self.filename[:-4] + '[ALL_VALID].csv')
+        os.makedirs(self.result_dir, exist_ok=True)
+        self._save_numbers(self.all_dubbed, self.result_dir + os.sep + self.filename[:-4] + '[DUBBED].csv')
+        self._save_numbers(self.all_valid, self.result_dir + os.sep + self.filename[:-4] + '[VALID].csv')
 
     def russian_flag(self):
         """ Печатает флаг России. """
@@ -81,6 +80,7 @@ class Comparer(Fixer):
 
 
 def color_range(numb):
+    """ Определяет цвет текста, в зависимости от процента совпадений. """
     if numb < 5:
         print(fg("green"), end='')
     elif numb < 20:
