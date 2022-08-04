@@ -14,7 +14,7 @@ from pie import make_plot
 
 
 logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("reset")}')
-TRANSLATION = str.maketrans('', '', '() -,.-+')  # Из номеров удаляются перечисленные символы.
+TRANSLATION = str.maketrans('', '', '() -,.-+*')  # Из номеров удаляются перечисленные символы.
 
 
 class Fixer:
@@ -65,31 +65,36 @@ class Fixer:
         with open(self.filename, 'r', newline='', encoding='utf-8') as csvfile:
             return [i[0] for i in list(csv.reader(csvfile)) if i]
 
+    @staticmethod
+    def correct_number(number):
+        """ Исправляет телефонный номер до формата 79XXXXXXXXX. """
+        if not number.isdigit():
+            logging.info(f'{number} удалил лишние символы. ')
+            number = number.translate(TRANSLATION)  # Убираем нецифровые символы.
+        if number.startswith('89') and len(number) == 11:
+            logging.info(f'{number} исправил 8 на 7.')
+            return '7' + number[1:]
+        elif number.startswith('9') and len(number) == 10:
+            logging.info(f'{number} добавил 7 перед номером.')
+            return f'7' + number
+        return number
+
     def fix(self):
         """ Анализирует и исправляет номера. """
         for number in self.all_numbers:
-            if not number.isdigit():
-                logging.info(f'{number} удалил лишние символы. ')
-                number = number.translate(TRANSLATION)  # Убираем нецифровые символы.
-            if number.startswith('8') and len(number) == 11:
-                logging.info(f'{number} исправил 8 на 7.')
-                number = '7' + number[1:]
-            elif number.startswith('9') and len(number) == 10:
-                logging.info(f'{number} добавил 7 перед номером.')
-                number = f'7' + number
-            elif len(number) < 10:
-                self.error_numbers.append(number)
+            number = self.correct_number(number)
+            if len(number) != 11 or not number.startswith('79') or not number.isdigit():
                 logging.warning(f"Нашёл некорректную запись {number}")
+                self.error_numbers.append(number)
                 continue
-            self.numbers.append(number)
-            if self.numbers.count(number) >= 2:
+            if number in self.valid_numbers:
                 logging.warning(f"Нашёл дубликат {number}")
                 self.dubbed.append(number)
+            else:
+                self.valid_numbers.append(number)
 
     def result(self):
         """ Выводит ОТЧЁТ со статистикой в текстовом виде. """
-        self.valid_numbers = set(self.numbers)
-
         total = len(self.all_numbers)
         errors = len(self.error_numbers)         # Некорректные номера
         valid_num = len(self.valid_numbers)      # Валидные уникальные номера
@@ -99,7 +104,7 @@ class Fixer:
 
         print(f'\nИз {total} удалено {errors + len(self.dubbed)}  шт.')
         print(f'  ├ некорректных: {errors}')
-        print(f'  └ дубликатов: {len(self.dubbed)}')
+        print(f'  └ повторов: {len(self.dubbed)}')
 
         print(f'\nИТОГ')
         print(f'  └ КАЧЕСТВО: {int(valid_num/(total/100))}% ({valid_num}){attr("reset")}\n')
@@ -124,11 +129,11 @@ class Fixer:
     @staticmethod
     def color_range(numb):
         """ Определяет цвет текста, в зависимости от процента совпадений. """
-        if numb < 5:
+        if numb < 4:
             print(fg("green"), end='')
-        elif numb < 20:
+        elif numb < 30:
             print(fg("yellow"), end='')
-        elif numb < 50:
+        elif numb < 60:
             print(fg("orange_red_1"), end='')
         else:
             print(fg("red"), end='')

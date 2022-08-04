@@ -45,13 +45,13 @@ class Comparer(Fixer):
             with open(used_table, 'r', newline='', encoding='utf-8') as csvfile:
                 used_numbers = [i[0] for i in list(csv.reader(csvfile))]
 
-            for used_number in used_numbers:
-                if used_number in self.all_numbers:
-                    dubbed.append(used_number)
-                    logging.warning(f'Нашёл дубль {used_number}!')
-                    self.all_dubbed.append(used_number)
-                    if used_number in self.all_valid:
-                        self.all_valid.remove(used_number)
+            for new_number in self.all_numbers:
+                if new_number in used_numbers:                      # Если новый номер в базе.
+                    dubbed.append(new_number)                       # Помечаем как текущий дубль.
+                    logging.warning(f'Нашёл дубль {new_number}!')
+                    self.all_dubbed.append(new_number)              # Помечаем как общий дубль.
+                    if new_number in self.all_valid:
+                        self.all_valid.remove(new_number)           # Удаляем из списка валидных.
 
             curr_table_eq = round((len(dubbed) / (len(self.all_numbers) / 100)), 2)
             self.color_range(curr_table_eq)
