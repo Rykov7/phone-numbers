@@ -21,6 +21,7 @@ class Comparer(Fixer):
         self.all_overlap = []
         self.all_origin = set()
         self.result_dir = '[COMPARER]'
+        self.all_origin = set(self.all_numbers[:])
         self.all_numbers = set(self.all_numbers)  # Перевод в хэш для скорости.
 
     def greeting(self):
@@ -46,7 +47,7 @@ class Comparer(Fixer):
                 used_numbers = set([i[0] for i in csv.reader(csvfile)])
 
             dubbed = used_numbers & self.all_numbers     # Пересечения
-            self.all_origin = self.all_numbers - dubbed  # Оригиналы (без пересечений)
+            self.all_origin = self.all_origin - dubbed   # Оригиналы (без пересечений)
             self.all_overlap.extend(dubbed)              # Добавляем текущие дубли к общим.
 
             curr_table_eq = round((len(dubbed) / (len(self.all_numbers) / 100)), 2)

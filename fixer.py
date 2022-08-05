@@ -1,6 +1,7 @@
 """ Модуль fixer.py - Приводит телефонные номера к формату 79XXXXXXXXX """
 import csv
 import os
+import sys
 import re
 import logging
 from datetime import datetime as dt
@@ -47,16 +48,19 @@ class Fixer:
         """ Ищет все CSV в текущей директории. """
         all_files = list(Path().glob('*.csv'))
 
-        print("CSV в текущей директории:")
         for file in all_files:
             file_option_string = f'  {all_files.index(file)+1}. {str(file)}{fg("#444")}'
             file_size_string = attr("reset") + '{:,} KB'.format(int(os.path.getsize(file) / 1024))
             # Прибавляем 15 из-за символов смены цвета.
             print(f'{file_option_string}'.ljust(self.win_with-len(file_size_string)+15, '.'), end='')
             print(f'{file_size_string}')
-        print()
-        choose = self._which_file(f'Выберите файл для обработки (1-{len(all_files)}): ', len(all_files))
-        return str(all_files[choose-1])
+        if all_files:
+            print("\nCSV в текущей директории:")
+            choose = self._which_file(f'Выберите файл для обработки (1-{len(all_files)}): ', len(all_files))
+            return str(all_files[choose - 1])
+        else:
+            print("Добавьте CSV в текущую директорию для работы!")
+            sys.exit()
 
     def open_csv(self):
         """ Открывает CSV """
