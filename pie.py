@@ -1,18 +1,18 @@
 """ Модуль pie.py построение круговой диаграммы. """
 
 
-def make_plot(filename, title, valid, dubbed, errors=None):
+def make_plot(filename, title, green, blue, grey=None):
     """ Строит круговую диаграмму и сохраняет в PNG. """
     import matplotlib.pyplot as plt
     from colored import bg, attr
 
     # data
-    if errors is not None:
-        x = [valid, dubbed, errors]
-        labels = f'Номера ({valid})', f'Повторы ({dubbed})', f'Мусор ({errors})'
+    if grey is not None:
+        x = [green, blue, grey]
+        labels = f'Номера ({green})', f'Повторы ({blue})', f'Мусор ({grey})'
     else:
-        x = [valid, dubbed]
-        labels = f'Номера ({valid})', f'Повторы ({dubbed})'
+        x = [green, blue]
+        labels = f'Оригиналы ({green})', f'Пересечения ({blue})'
 
     colors = ['#52a756', '#e51c24', '#a9a9ab']
 
