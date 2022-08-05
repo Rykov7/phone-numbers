@@ -9,10 +9,10 @@ def make_plot(filename, title, green, blue, grey=None):
     # data
     if grey is not None:
         x = [green, blue, grey]
-        labels = f'Номера ({green})', f'Повторы ({blue})', f'Мусор ({grey})'
+        labels = 'Номера ({:,})'.format(green), 'Повторы ({:,})'.format(blue), 'Мусор ({:,})'.format(grey)
     else:
         x = [green, blue]
-        labels = f'Оригиналы ({green})', f'Пересечения ({blue})'
+        labels = 'Оригиналы ({:,})'.format(green), 'Пересечения ({:,})'.format(blue)
 
     colors = ['#52a756', '#e51c24', '#a9a9ab']
 
@@ -31,7 +31,7 @@ def make_plot(filename, title, green, blue, grey=None):
     ax.set_title(title, loc='center', fontdict={'fontsize': 9, 'color': '#59595b'})
 
     plt.savefig(filename)
-    print(f'{bg("blue")}[СОХРАНЕНО] График {filename}{attr("reset")}')
+    print(f'{bg("dodger_blue_3")}[PNG] График {filename}{attr("reset")}')
 
 
 if __name__ == '__main__':

@@ -50,7 +50,7 @@ class Fixer:
         print("CSV в текущей директории:")
         for file in all_files:
             file_option_string = f'  {all_files.index(file)+1}. {str(file)}{fg("#444")}'
-            file_size_string = f'{attr("reset")}{int(os.path.getsize(file) / 1024)} KB'
+            file_size_string = attr("reset") + '{:,} KB'.format(int(os.path.getsize(file) / 1024))
             # Прибавляем 15 из-за символов смены цвета.
             print(f'{file_option_string}'.ljust(self.win_with-len(file_size_string)+15, '.'), end='')
             print(f'{file_size_string}')
@@ -61,7 +61,7 @@ class Fixer:
     def open_csv(self):
         """ Открывает CSV """
         with open(self.filename, 'r', newline='', encoding='utf-8') as csvfile:
-            return [i[0] for i in list(csv.reader(csvfile)) if i]
+            return [i[0] for i in csv.reader(csvfile) if i]
 
     @staticmethod
     def correct_number(number):
@@ -118,7 +118,7 @@ class Fixer:
                 writer = csv.writer(file)
                 for numb in numbs:
                     writer.writerow([numb])
-            print(f'{bg("blue")}[СОХРАНЕНО] {len(numbs)} шт. в файле {filename}{attr("reset")}')
+            print(f'{bg("dodger_blue_3")}[CSV] {len(numbs)} шт. в файле {filename}{attr("reset")}')
 
     def save_everything(self):
         """ Сохраняет все файлы. """
@@ -131,20 +131,20 @@ class Fixer:
     def color_range(numb):
         """ Определяет цвет текста, в зависимости от процента совпадений. """
         if numb < 4:
-            print(fg("#52a7563"), end='')
+            print(fg("#52a7563"), end='')  # green
         elif numb < 30:
             print(fg("yellow"), end='')
         elif numb < 60:
             print(fg("orange_red_1"), end='')
         else:
-            print(fg("#e51c24"), end='')
+            print(fg("#e51c24"), end='')  # red
 
     def russian_flag(self):
         """ Печатает флаг России. """
         print()
-        print(bg("white") + fg("white") + 'R' * self.win_with + attr("reset"))
-        print(bg("blue") + fg("blue") + 'U' * self.win_with + attr("reset"))
-        print(bg("#e51c24") + fg("red") + 'S' * self.win_with + attr("reset"))
+        print(bg("cornsilk_1") + fg("cornsilk_1") + 'R' * self.win_with + attr("reset"))
+        print(bg("dodger_blue_3") + fg("dodger_blue_3") + 'U' * self.win_with + attr("reset"))
+        print(bg("red_3a") + fg("red_3a") + 'S' * self.win_with + attr("reset"))
 
 
 if __name__ == '__main__':
