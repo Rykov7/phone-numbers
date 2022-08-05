@@ -23,10 +23,9 @@ def make_plot(filename, title, green, blue, grey=None):
            normalize=True,
            wedgeprops={"linewidth": 3, "edgecolor": "white", 'width': 0.5}, frame=False)
 
-    ax.legend(labels, bbox_to_anchor=(.75, .6), bbox_transform=fig.transFigure,
+    ax.legend(labels, bbox_to_anchor=(.74, .6), bbox_transform=fig.transFigure,
               labelcolor='#59595b', fontsize=9,
-              frameon=False, handleheight=2.6,
-
+              frameon=False, handleheight=2.0, handlelength=1.6, handletextpad=0.5,
               )
     ax.axis('equal')
     ax.set_title(title, loc='center', fontdict={'fontsize': 9, 'color': '#59595b'})
