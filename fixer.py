@@ -3,6 +3,7 @@ import csv
 import os
 import re
 import logging
+from datetime import datetime as dt
 from pathlib import Path
 from colored import bg, fg, attr
 from config import LOG_MODE, WIN_WIDTH
@@ -16,7 +17,8 @@ class Fixer:
     def __init__(self):
         self.win_with = WIN_WIDTH
         self.greeting()
-        self.error_numbers, self.dubbed, self.valid_numbers = [], [], []
+        self.error_numbers, self.dubbed, = [], []
+        self.valid_numbers = set()
         self.filename = self.find_new()
         self.all_numbers = self.open_csv()
         self.result_dir = '[FIXER]'
@@ -59,7 +61,7 @@ class Fixer:
     def open_csv(self):
         """ Открывает CSV """
         with open(self.filename, 'r', newline='', encoding='utf-8') as csvfile:
-            return [i[0] for i in list(csv.reader(csvfile)) if i]
+            return tuple([i[0] for i in list(csv.reader(csvfile)) if i])
 
     @staticmethod
     def correct_number(number):
@@ -90,7 +92,7 @@ class Fixer:
                 logging.warning(f"Нашёл дубликат {number}")
                 self.dubbed.append(number)
             else:
-                self.valid_numbers.append(number)
+                self.valid_numbers.add(number)
 
     def result(self):
         """ Выводит ОТЧЁТ со статистикой в текстовом виде. """
@@ -146,7 +148,10 @@ class Fixer:
 
 if __name__ == '__main__':
     fixer = Fixer()
+    start = dt.now()
     fixer.fix()
+    end = dt.now() - start
+    print(f"Время обработки: {end.seconds} сек.")
     fixer.result()
     fixer.save_everything()    # Сохраняет изображение с графиком.
 
