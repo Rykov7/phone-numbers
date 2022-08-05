@@ -1,6 +1,7 @@
 """ Модуль comparer.py - Сравнивает новую таблицу номеров со старыми. """
 import os
 import logging
+import sys
 from pathlib import Path
 import csv
 from datetime import datetime as dt
@@ -16,13 +17,13 @@ class Comparer(Fixer):
     """ Сравниватель. """
     def __init__(self):
         super().__init__()
-        self.used_location = 'Used'  # Папка со старыми CSV.
+        self.dir_used = 'Used'  # Папка со старыми CSV.
         self.used_tables = self.find_used()
         self.all_overlap = []
         self.all_origin = set()
         self.result_dir = '[COMPARER]'
         self.all_origin = set(self.all_numbers[:])
-        self.all_numbers = set(self.all_numbers)  # Перевод в хэш для скорости.
+        self.all_numbers = set(self.all_numbers)
 
     def greeting(self):
         """ Приветствие программы. """
@@ -33,9 +34,12 @@ class Comparer(Fixer):
     def find_used(self):
         """ Ищет CSV в "Used" для сравнения с проверяемым CSV. """
         used_tables = []
-        for folder_name, sub_folders, filenames in os.walk(Path(self.used_location)):
+        for folder_name, sub_folders, filenames in os.walk(Path(self.dir_used)):
             for file in Path(folder_name).glob('*.csv'):
                 used_tables.append(file)
+        if not used_tables:
+            print('\nВ папке Used отсутствуют CSV!')
+            sys.exit()
         return used_tables
 
     def compare(self):
@@ -56,6 +60,7 @@ class Comparer(Fixer):
 
     def overall(self):
         """ Печатает общий результат. """
+        self.all_overlap = set(self.all_overlap)
         table_eq = int((len(self.all_overlap) / (len(self.all_numbers)/100)))
         self.color_range(table_eq)
         print('[ РЕЗУЛЬТАТ СРАВНЕНИЯ ]'.center(self.win_with, '.'))

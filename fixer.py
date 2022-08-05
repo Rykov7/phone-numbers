@@ -45,21 +45,24 @@ class Fixer:
                 pass
 
     def find_new(self):
-        """ Ищет все CSV в текущей директории. """
+        """ Ищет все CSV в текущей папке. """
         all_files = list(Path().glob('*.csv'))
-
-        for file in all_files:
-            file_option_string = f'  {all_files.index(file)+1}. {str(file)}{fg("#444")}'
-            file_size_string = attr("reset") + '{:,} KB'.format(int(os.path.getsize(file) / 1024))
-            # Прибавляем 15 из-за символов смены цвета.
-            print(f'{file_option_string}'.ljust(self.win_with-len(file_size_string)+15, '.'), end='')
-            print(f'{file_size_string}')
         if all_files:
-            print("\nCSV в текущей директории:")
-            choose = self._which_file(f'Выберите файл для обработки (1-{len(all_files)}): ', len(all_files))
+            print("CSV в текущей папке:")
+            for file in all_files:
+                file_option_string = f'  {all_files.index(file) + 1}. {str(file)}{fg("#444")}'
+                file_size_string = attr("reset") + '{:,} KB'.format(int(os.path.getsize(file) / 1024))
+                # Прибавляем 15 из-за символов смены цвета.
+                print(f'{file_option_string}'.ljust(self.win_with - len(file_size_string) + 15, '.'), end='')
+                print(f'{file_size_string}')
+            print()
+            if len(all_files) == 1:
+                choose = self._which_file(f'Выберите файл для обработки (1): ', 1)
+            else:
+                choose = self._which_file(f'Выберите файл для обработки (1-{len(all_files)}): ', len(all_files))
             return str(all_files[choose - 1])
         else:
-            print("Добавьте CSV в текущую директорию для работы!")
+            print(f'Для начала работы добавьте CSV в текущую папку:\n{Path.cwd()}\n')
             sys.exit()
 
     def open_csv(self):
