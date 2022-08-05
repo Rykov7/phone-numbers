@@ -17,8 +17,8 @@ class Fixer:
     def __init__(self):
         self.win_with = WIN_WIDTH
         self.greeting()
-        self.error_numbers, self.dubbed, = [], []
-        self.valid_numbers = set()
+        self.junk, self.dubbed, = [], []
+        self.valid = set()
         self.filename = self.find_new()
         self.all_numbers = self.open_csv()
         self.result_dir = '[FIXER]'
@@ -61,7 +61,7 @@ class Fixer:
     def open_csv(self):
         """ Открывает CSV """
         with open(self.filename, 'r', newline='', encoding='utf-8') as csvfile:
-            return tuple([i[0] for i in list(csv.reader(csvfile)) if i])
+            return [i[0] for i in list(csv.reader(csvfile)) if i]
 
     @staticmethod
     def correct_number(number):
@@ -86,33 +86,34 @@ class Fixer:
             if len(number) != 11 or not number.startswith('79') or not number.isdigit() or \
                     re.search(r'(\d)\1{6}', number):
                 logging.warning(f"Нашёл некорректную запись {number}")
-                self.error_numbers.append(number)
+                self.junk.append(number)
                 continue
-            if number in self.valid_numbers:
+            if number in self.valid:
                 logging.warning(f"Нашёл дубликат {number}")
                 self.dubbed.append(number)
             else:
-                self.valid_numbers.add(number)
+                self.valid.add(number)
 
     def result(self):
         """ Выводит ОТЧЁТ со статистикой в текстовом виде. """
-        total = len(self.all_numbers)
-        errors = len(self.error_numbers)         # Некорректные номера
-        valid_num = len(self.valid_numbers)      # Валидные уникальные номера
+        all_numbers_count = len(self.all_numbers)
+        junk_count = len(self.junk)         # Некорректные номера
+        valid_count = len(self.valid)      # Валидные уникальные номера
         print()
-        self.color_range(round(100 - valid_num/(total/100)))
+        self.color_range(round(100 - valid_count/(all_numbers_count/100)))
         print('[ РЕЗУЛЬТАТ ИСПРАВЛЕНИЙ ]'.center(self.win_with, '.'))
-        print(f'\nУДАЛЕНО {errors + len(self.dubbed)} из {total}')
+        print(f'\nВСЕГО: {all_numbers_count}')
+        print(f'ПЛОХИЕ: {junk_count + len(self.dubbed)}')
         print(f'  ├ повторы: {len(self.dubbed)}')
-        print(f'  └ мусор: {errors}')
-        print(f'\nКАЧЕСТВО: {int(valid_num/(total/100))}% ({valid_num})\n')
+        print(f'  └ мусор: {junk_count}')
+        print(f'\nНОМЕРА: {int(valid_count/(all_numbers_count/100))}% ({valid_count})\n')
         print(''.center(self.win_with, '-'))
         print(attr("reset"))
 
     @staticmethod
     def _save_numbers(numbs, filename):
         """ Сохраняет список номеров в файл. """
-        if numbs:
+        if numbs:  # Сохраняет файл, только если он не пустой.
             with open(filename, 'w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
                 for numb in numbs:
@@ -122,9 +123,9 @@ class Fixer:
     def save_everything(self):
         """ Сохраняет все файлы. """
         os.makedirs(self.result_dir, exist_ok=True)
-        self._save_numbers(sorted(self.valid_numbers), self.result_dir + os.sep + self.filename[:-4] + '[valid].csv')
+        self._save_numbers(sorted(self.valid), self.result_dir + os.sep + self.filename[:-4] + '[valid].csv')
         self._save_numbers(set(self.dubbed), self.result_dir + os.sep + self.filename[:-4] + '[dubs].csv')
-        self._save_numbers(self.error_numbers, self.result_dir + os.sep + self.filename[:-4] + '[junk].csv')
+        self._save_numbers(self.junk, self.result_dir + os.sep + self.filename[:-4] + '[junk].csv')
 
     @staticmethod
     def color_range(numb):
@@ -148,7 +149,7 @@ class Fixer:
 
 if __name__ == '__main__':
     fixer = Fixer()
-    start = dt.now()
+    start = dt.now()  # Стартовое время для определения скорости работы.
     fixer.fix()
     end = dt.now() - start
     print(f"Время обработки: {end.seconds} сек.")
@@ -156,5 +157,5 @@ if __name__ == '__main__':
     fixer.save_everything()    # Сохраняет изображение с графиком.
 
     make_plot(fixer.result_dir + os.sep + fixer.filename[:-4] + '.png', fixer.filename,
-              len(fixer.valid_numbers), len(fixer.dubbed), len(fixer.error_numbers))
+              len(fixer.valid), len(fixer.dubbed), len(fixer.junk))
     fixer.russian_flag()

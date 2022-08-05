@@ -3,6 +3,7 @@ import os
 import logging
 from pathlib import Path
 import csv
+from datetime import datetime as dt
 from colored import fg, attr
 from fixer import Fixer
 from config import LOG_MODE
@@ -73,7 +74,10 @@ class Comparer(Fixer):
 
 if __name__ == '__main__':
     comparer = Comparer()
+    start = dt.now()
     comparer.compare()
+    end = dt.now() - start
+    print(f"Время обработки: {end.seconds} сек.")
     comparer.overall()
     comparer.save_everything()
 
