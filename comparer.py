@@ -49,15 +49,15 @@ class Comparer(Fixer):
             with open(used_table, 'r', newline='', encoding='utf-8') as csvfile:
                 used_numbers = set([i[0] for i in csv.reader(csvfile)])
 
-            dubbed = used_numbers & self.all_numbers      # Пересечения со всеми
-            self.all_origin.difference(dubbed)            # Пока не пересёкшиеся
-            self.all_overlap.union(dubbed)  # Добавляем текущие дубли к общим.
+            dubbed = used_numbers & self.all_numbers      # Текущие пересечения со всеми.
+            self.all_origin.difference(dubbed)            # Пока не пересёкшиеся.
+            self.all_overlap.union(dubbed)                # Добавляем текущие ко всем пересёкшимся.
 
             curr_table_eq = round((len(dubbed) / (len(self.all_numbers) / 100)), 2)
             self.color_range(curr_table_eq)
             print(f'  └ СХОДСТВО: {curr_table_eq}% ({len(dubbed)}/{len(self.all_numbers)})\n{attr("reset")}')
 
-    def overall(self):
+    def result(self):
         """ Печатает общий результат. """
         table_eq = int((len(self.all_overlap) / (len(self.all_numbers)/100)))
         self.color_range(table_eq)
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     comparer.compare()
     end = dt.now() - start
     print(f"Время обработки: {end.seconds} сек.")
-    comparer.overall()
+    comparer.result()
     comparer.save_everything()
 
     # Сохраняет изображение с графиком.
