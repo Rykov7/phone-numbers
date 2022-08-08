@@ -18,10 +18,9 @@ class Comparer(Fixer):
     def __init__(self):
         super().__init__()
         self.dir_used = 'Used'  # Папка со старыми CSV.
+        self.dir_result = '[COMPARER]'
         self.used_tables = self.find_used()
-        self.all_overlap = []
-        self.all_origin = set()
-        self.result_dir = '[COMPARER]'
+        self.all_overlap = set()
         self.all_origin = set(self.all_numbers[:])
         self.all_numbers = set(self.all_numbers)
 
@@ -50,9 +49,9 @@ class Comparer(Fixer):
             with open(used_table, 'r', newline='', encoding='utf-8') as csvfile:
                 used_numbers = set([i[0] for i in csv.reader(csvfile)])
 
-            dubbed = used_numbers & self.all_numbers     # Пересечения
-            self.all_origin = self.all_origin - dubbed   # Оригиналы (без пересечений)
-            self.all_overlap.extend(dubbed)              # Добавляем текущие дубли к общим.
+            dubbed = used_numbers & self.all_numbers      # Пересечения со всеми
+            self.all_origin = self.all_origin - dubbed    # Пока не пересёкшиеся
+            self.all_overlap = self.all_overlap | dubbed  # Добавляем текущие дубли к общим.
 
             curr_table_eq = round((len(dubbed) / (len(self.all_numbers) / 100)), 2)
             self.color_range(curr_table_eq)
@@ -60,7 +59,6 @@ class Comparer(Fixer):
 
     def overall(self):
         """ Печатает общий результат. """
-        self.all_overlap = set(self.all_overlap)
         table_eq = int((len(self.all_overlap) / (len(self.all_numbers)/100)))
         self.color_range(table_eq)
         print('[ РЕЗУЛЬТАТ СРАВНЕНИЯ ]'.center(self.win_with, '.'))
@@ -70,9 +68,9 @@ class Comparer(Fixer):
 
     def save_everything(self):
         """ Сохраняет все CSV-файлы. """
-        os.makedirs(self.result_dir, exist_ok=True)
-        self._save_numbers(self.all_origin, self.result_dir + os.sep + self.filename[:-4] + '[ORIGIN].csv')
-        self._save_numbers(self.all_overlap, self.result_dir + os.sep + self.filename[:-4] + '[OVERLAP].csv')
+        os.makedirs(self.dir_result, exist_ok=True)
+        self._save_numbers(self.all_origin, self.dir_result + os.sep + self.filename[:-4] + '[ORIGIN].csv')
+        self._save_numbers(self.all_overlap, self.dir_result + os.sep + self.filename[:-4] + '[OVERLAP].csv')
 
 
 if __name__ == '__main__':
@@ -85,6 +83,6 @@ if __name__ == '__main__':
     comparer.save_everything()
 
     # Сохраняет изображение с графиком.
-    make_plot(comparer.result_dir + os.sep + comparer.filename[:-4] + '.png', comparer.filename,
+    make_plot(comparer.dir_result + os.sep + comparer.filename[:-4] + '.png', comparer.filename,
               len(comparer.all_origin), len(comparer.all_overlap))
     comparer.russian_flag()
