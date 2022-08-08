@@ -21,7 +21,7 @@ class Comparer(Fixer):
         self.dir_result = '[COMPARER]'
         self.used_tables = self.find_used()
         self.all_overlap = set()
-        self.all_origin = set(self.all_numbers[:])
+        self.all_origin = set(self.all_numbers)
         self.all_numbers = set(self.all_numbers)
 
     def greeting(self):
@@ -50,8 +50,8 @@ class Comparer(Fixer):
                 used_numbers = set([i[0] for i in csv.reader(csvfile)])
 
             dubbed = used_numbers & self.all_numbers      # Пересечения со всеми
-            self.all_origin = self.all_origin - dubbed    # Пока не пересёкшиеся
-            self.all_overlap = self.all_overlap | dubbed  # Добавляем текущие дубли к общим.
+            self.all_origin.difference(dubbed)            # Пока не пересёкшиеся
+            self.all_overlap.union(dubbed)  # Добавляем текущие дубли к общим.
 
             curr_table_eq = round((len(dubbed) / (len(self.all_numbers) / 100)), 2)
             self.color_range(curr_table_eq)
