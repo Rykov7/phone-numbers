@@ -47,11 +47,11 @@ class Comparer(Fixer):
             """ Проход по CSV-файлам в Used. """
             print(f"{used_table}")
             with open(used_table, 'r', newline='', encoding='utf-8') as csvfile:
-                used_numbers = set([i[0] for i in csv.reader(csvfile)])
+                dubbed = set([i[0] for i in csv.reader(csvfile)])
 
-            dubbed = used_numbers & self.all_numbers    # Текущие пересечения со всеми.
-            self.all_origin -= dubbed                   # Пока не пересёкшиеся.
-            self.all_overlap |= dubbed                  # Добавляем текущие ко всем пересёкшимся.
+            dubbed &= self.all_numbers    # Расчёт пересечения текущего файла со всеми.
+            self.all_origin -= dubbed     # Расчёт не пересёкшихся номеров.
+            self.all_overlap |= dubbed    # Расчёт всех пересёкшимся.
 
             curr_table_eq = round((len(dubbed) / (len(self.all_numbers) / 100)), 2)
             self.color_range(curr_table_eq)
