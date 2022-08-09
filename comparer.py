@@ -49,9 +49,9 @@ class Comparer(Fixer):
             with open(used_table, 'r', newline='', encoding='utf-8') as csvfile:
                 used_numbers = set([i[0] for i in csv.reader(csvfile)])
 
-            dubbed = used_numbers & self.all_numbers      # Текущие пересечения со всеми.
-            self.all_origin.difference(dubbed)            # Пока не пересёкшиеся.
-            self.all_overlap.union(dubbed)                # Добавляем текущие ко всем пересёкшимся.
+            dubbed = used_numbers & self.all_numbers    # Текущие пересечения со всеми.
+            self.all_origin -= dubbed                   # Пока не пересёкшиеся.
+            self.all_overlap |= dubbed                  # Добавляем текущие ко всем пересёкшимся.
 
             curr_table_eq = round((len(dubbed) / (len(self.all_numbers) / 100)), 2)
             self.color_range(curr_table_eq)
@@ -59,7 +59,7 @@ class Comparer(Fixer):
 
     def result(self):
         """ Печатает общий результат. """
-        table_eq = int((len(self.all_overlap) / (len(self.all_numbers)/100)))
+        table_eq = round(len(self.all_overlap) / (len(self.all_numbers)/100))
         self.color_range(table_eq)
         print('[ РЕЗУЛЬТАТ СРАВНЕНИЯ ]'.center(self.win_with, '.'))
         print(f'\nОБЩЕЕ СХОДСТВО: {table_eq}% ({len(self.all_overlap)}/{len(self.all_numbers)})\n')
