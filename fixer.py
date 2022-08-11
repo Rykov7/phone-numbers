@@ -1,4 +1,4 @@
-""" Модуль fixer.py - Приводит телефонные номера к формату 79XXXXXXXXX """
+""" Module fixer.py - fixes phone numbers to 79XXXXXXXXX format. """
 import csv
 import os
 import sys
@@ -52,7 +52,7 @@ class Fixer:
             for file in all_files:
                 file_option_string = f'  {all_files.index(file) + 1}. {str(file)}{fg("#444")}'
                 file_size_string = attr("reset") + '{:,} KB'.format(int(os.path.getsize(file) / 1024))
-                # Прибавляем 15 из-за символов смены цвета.
+                # Adding 15 coz changing color special characters.
                 print(f'{file_option_string}'.ljust(self.win_with - len(file_size_string) + 15, '.'), end='')
                 print(f'{file_size_string}')
             print()
@@ -77,7 +77,7 @@ class Fixer:
             logging.info(f'{number} удалил лишние символы. ')
             for char in number:
                 if not char.isdigit():
-                    number = number.replace(char, '')  # Убираем нецифровые символы.
+                    number = number.replace(char, '')  # Clear non-digital chars.
         if number.startswith('89') and len(number) == 11:
             logging.info(f'{number} исправил 8 на 7.')
             return '7' + number[1:]
@@ -104,8 +104,8 @@ class Fixer:
     def result(self):
         """ Prints stats REPORT. """
         all_numbers_count = len(self.all_numbers)
-        junk_count = len(self.junk)         # Некорректные номера
-        valid_count = len(self.valid)      # Валидные уникальные номера
+        junk_count = len(self.junk)     # Junk strings
+        valid_count = len(self.valid)   # Valid numbers
         print()
         self.color_range(round(100 - valid_count/(all_numbers_count/100)))
         print('[ РЕЗУЛЬТАТ ИСПРАВЛЕНИЙ ]'.center(self.win_with, '.'))
@@ -120,7 +120,7 @@ class Fixer:
     @staticmethod
     def _save_numbers(numbs, filename):
         """ Saves number list to CSV file. """
-        if numbs:  # Сохраняет файл, только если он не пустой.
+        if numbs:  # Saves csv if it isn't empty.
             with open(filename, 'w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
                 for numb in numbs:

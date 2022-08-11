@@ -1,4 +1,4 @@
-""" Модуль comparer.py - Сравнивает новую таблицу номеров со старыми. """
+""" Module comparer.py - Compares tables. """
 import os
 import logging
 import sys
@@ -49,9 +49,9 @@ class Comparer(Fixer):
             with open(used_table, 'r', newline='', encoding='utf-8') as csvfile:
                 dubbed = set([i[0] for i in csv.reader(csvfile)])
 
-            dubbed &= self.all_numbers    # Расчёт пересечения текущего файла со всеми.
-            self.all_origin -= dubbed     # Расчёт не пересёкшихся номеров.
-            self.all_overlap |= dubbed    # Расчёт всех пересёкшимся.
+            dubbed &= self.all_numbers    # Calculate current overlaps.
+            self.all_origin -= dubbed     # Calculate non-overlaps.
+            self.all_overlap |= dubbed    # Calculate all overlaps.
 
             curr_table_eq = round((len(dubbed) / (len(self.all_numbers) / 100)), 2)
             self.color_range(curr_table_eq)
