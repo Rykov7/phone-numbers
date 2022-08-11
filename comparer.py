@@ -17,7 +17,7 @@ class Comparer(Fixer):
     """ Comparer. """
     def __init__(self):
         super().__init__()
-        self.dir_used = 'Used'  # Папка со старыми CSV.
+        self.dir_used = 'Used'
         self.dir_result = '[COMPARER]'
         self.used_tables = self.find_used()
         self.all_overlap = set()
