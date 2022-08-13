@@ -31,18 +31,12 @@ class Fixer:
         print()
 
     @staticmethod
-    def _which_file(question, allow_range) -> int:
+    def _which_file(question: str, allow_range: int) -> int:
         """ Validates file number. """
-        answer = ''
-        while not answer.isdigit():
+        while True:
             answer = input(question)
-            if answer.isdigit():
-                if int(answer) in range(1, allow_range + 1):
-                    return int(answer)
-                else:
-                    answer = ''
-            else:
-                pass
+            if answer.isdigit() and int(answer) in range(1, allow_range + 1):
+                return int(answer)
 
     def find_new(self) -> str:
         """ Finds all CSVs in the work directory. Returns filename string. """
@@ -52,7 +46,7 @@ class Fixer:
             for file in all_files:
                 file_option_string = f'  {all_files.index(file) + 1}. {str(file)}{fg("#444")}'
                 file_size_string = attr("reset") + '{:,} KB'.format(int(os.path.getsize(file) / 1024))
-                # Adding 15 coz changing color special characters.
+                # Adding 15 of colored special characters.
                 print(f'{file_option_string}'.ljust(self.win_with - len(file_size_string) + 15, '.'), end='')
                 print(f'{file_size_string}')
             print()
@@ -113,7 +107,7 @@ class Fixer:
         print(f'ПЛОХИЕ: {junk_count + len(self.dubbed)}')
         print(f'  ├ повторы: {len(self.dubbed)}')
         print(f'  └ мусор: {junk_count}')
-        print(f'\nНОМЕРА: {int(valid_count / (all_numbers_count / 100))}% ({valid_count})\n')
+        print(f'\nНОМЕРА: {valid_count / (all_numbers_count / 100):.0f}% ({valid_count})\n')
         print(''.center(self.win_with, '-'))
         print(attr("reset"))
 

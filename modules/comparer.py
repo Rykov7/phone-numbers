@@ -53,16 +53,16 @@ class Comparer(Fixer):
             self.all_origin -= dubbed     # Calculate non-overlaps.
             self.all_overlap |= dubbed    # Calculate all overlaps.
 
-            curr_table_eq = round((len(dubbed) / (len(self.all_numbers) / 100)), 2)
+            curr_table_eq = len(dubbed) / (len(self.all_numbers) / 100)
             self.color_range(curr_table_eq)
-            print(f'  └ СХОДСТВО: {curr_table_eq}% ({len(dubbed)}/{len(self.all_numbers)})\n{attr("reset")}')
+            print(f'  └ СХОДСТВО: {curr_table_eq:.0f}% ({len(dubbed)}/{len(self.all_numbers)})\n{attr("reset")}')
 
     def result(self):
         """ Prints overall result. """
-        table_eq = round(len(self.all_overlap) / (len(self.all_numbers)/100))
+        table_eq = len(self.all_overlap) / (len(self.all_numbers)/100)
         self.color_range(table_eq)
         print('[ РЕЗУЛЬТАТ СРАВНЕНИЯ ]'.center(self.win_with, '.'))
-        print(f'\nОБЩЕЕ СХОДСТВО: {table_eq}% ({len(self.all_overlap)}/{len(self.all_numbers)})\n')
+        print(f'\nОБЩЕЕ СХОДСТВО: {table_eq:.0f}% ({len(self.all_overlap)}/{len(self.all_numbers)})\n')
         print(''.center(self.win_with, '-'))
         print(attr("reset"))
 
