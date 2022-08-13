@@ -1,2 +1,2 @@
-@.venv\Scripts\python.exe fixer.py %*
+@.venv\Scripts\python.exe modules\fixer.py %*
 @pause

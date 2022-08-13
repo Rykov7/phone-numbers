@@ -15,6 +15,7 @@ logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("res
 
 class Fixer:
     """ Fixer. """
+
     def __init__(self):
         self.win_with = WIN_WIDTH
         self.greeting()
@@ -31,21 +32,21 @@ class Fixer:
         print()
 
     @staticmethod
-    def _which_file(question, allow_range):
+    def _which_file(question, allow_range) -> int:
         """ Validates file number. """
         answer = ''
         while not answer.isdigit():
             answer = input(question)
             if answer.isdigit():
-                if int(answer) in range(1, allow_range+1):
+                if int(answer) in range(1, allow_range + 1):
                     return int(answer)
                 else:
                     answer = ''
             else:
                 pass
 
-    def find_new(self):
-        """ Finds all CSVs in the work directory. """
+    def find_new(self) -> str:
+        """ Finds all CSVs in the work directory. Returns filename string. """
         all_files = list(Path().glob('*.csv'))
         if all_files:
             print("CSV в текущей папке:")
@@ -65,13 +66,13 @@ class Fixer:
             print(f'Для начала работы добавьте CSV в текущую папку:\n{Path.cwd()}\n')
             sys.exit()
 
-    def open_csv(self):
+    def open_csv(self) -> list[str]:
         """ Reads CSV into list. """
         with open(self.filename, 'r', newline='', encoding='utf-8') as csvfile:
             return [i[0] for i in csv.reader(csvfile) if i]
 
     @staticmethod
-    def correct_number(number):
+    def correct_number(number: str) -> str:
         """ Fixes a phone number to 79XXXXXXXXX format. """
         if not number.isdigit():
             logging.info(f'{number} удалил лишние символы. ')
@@ -104,16 +105,16 @@ class Fixer:
     def result(self):
         """ Prints stats REPORT. """
         all_numbers_count = len(self.all_numbers)
-        junk_count = len(self.junk)     # Junk strings
-        valid_count = len(self.valid)   # Valid numbers
+        junk_count = len(self.junk)  # Junk strings
+        valid_count = len(self.valid)  # Valid numbers
         print()
-        self.color_range(round(100 - valid_count/(all_numbers_count/100)))
+        self.color_range(round(100 - valid_count / (all_numbers_count / 100)))
         print('[ РЕЗУЛЬТАТ ИСПРАВЛЕНИЙ ]'.center(self.win_with, '.'))
         print(f'\nВСЕГО: {all_numbers_count}')
         print(f'ПЛОХИЕ: {junk_count + len(self.dubbed)}')
         print(f'  ├ повторы: {len(self.dubbed)}')
         print(f'  └ мусор: {junk_count}')
-        print(f'\nНОМЕРА: {int(valid_count/(all_numbers_count/100))}% ({valid_count})\n')
+        print(f'\nНОМЕРА: {int(valid_count / (all_numbers_count / 100))}% ({valid_count})\n')
         print(''.center(self.win_with, '-'))
         print(attr("reset"))
 
@@ -161,7 +162,7 @@ if __name__ == '__main__':
     end = dt.now() - start
     print(f"Время обработки: {end.seconds} сек.")
     fixer.result()
-    fixer.save_everything()    # Сохраняет изображение с графиком.
+    fixer.save_everything()  # Сохраняет изображение с графиком.
 
     make_plot(fixer.result_dir + os.sep + fixer.filename[:-4] + '.png', fixer.filename,
               len(fixer.valid), len(fixer.dubbed), len(fixer.junk))

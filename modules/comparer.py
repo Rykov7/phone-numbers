@@ -47,7 +47,7 @@ class Comparer(Fixer):
             """ Проход по CSV-файлам в Used. """
             print(f"{used_table}")
             with open(used_table, 'r', newline='', encoding='utf-8') as csvfile:
-                dubbed = set([i[0] for i in csv.reader(csvfile)])
+                dubbed = {i[0] for i in csv.reader(csvfile)}
 
             dubbed &= self.all_numbers    # Calculate current overlaps.
             self.all_origin -= dubbed     # Calculate non-overlaps.

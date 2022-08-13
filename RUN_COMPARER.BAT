@@ -1,2 +1,2 @@
-@.venv\Scripts\python.exe comparer.py %*
+@.venv\Scripts\python.exe modules\comparer.py %*
 @pause
