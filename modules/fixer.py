@@ -15,7 +15,6 @@ logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("res
 
 class Fixer:
     """ Fixer. """
-
     def __init__(self):
         self.win_with = WIN_WIDTH
         self.greeting()

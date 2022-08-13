@@ -1,12 +1,12 @@
-""" Модуль pie.py построение круговой диаграммы. """
+""" Module pie.py - build pie chart. """
 
 
 def make_plot(filename, title, green, blue, grey=None):
-    """ Строит круговую диаграмму и сохраняет в PNG. """
+    """ Build pie plot and save to PNG. """
     import matplotlib.pyplot as plt
     from colored import bg, attr
 
-    # data
+    # Data.
     if grey is not None:
         x = [green, blue, grey]
         labels = 'Номера ({:,})'.format(green), 'Повторы ({:,})'.format(blue), 'Мусор ({:,})'.format(grey)
@@ -16,7 +16,7 @@ def make_plot(filename, title, green, blue, grey=None):
 
     colors = ['#52a756', '#e51c24', '#a9a9ab']
 
-    # plot
+    # Plot.
     fig, ax = plt.subplots(figsize=(8, 5))
 
     ax.pie(x, colors=colors, radius=1, startangle=90, counterclock=False,
