@@ -1,7 +1,7 @@
 """ Module pie.py - build pie chart. """
 
 
-def make_plot(filename, title, green, blue, grey=None):
+def make_plot(filename: str, title: str, green: int, blue: int, grey=None):
     """ Build pie plot and save to PNG. """
     import matplotlib.pyplot as plt
     from colored import bg, attr
@@ -37,5 +37,6 @@ def make_plot(filename, title, green, blue, grey=None):
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     from colored import bg, attr
+
     make_plot('numbers.png', 'numbers.csv', 1955, 300, 50)
     plt.show()

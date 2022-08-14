@@ -15,6 +15,7 @@ logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("res
 
 class Comparer(Fixer):
     """ Comparer. """
+
     def __init__(self):
         super().__init__()
         self.dir_used = 'Used'
@@ -49,9 +50,9 @@ class Comparer(Fixer):
             with open(used_table, 'r', newline='', encoding='utf-8') as csvfile:
                 dubbed = {i[0] for i in csv.reader(csvfile)}
 
-            dubbed &= self.all_numbers    # Calculate current overlaps.
-            self.all_origin -= dubbed     # Calculate non-overlaps.
-            self.all_overlap |= dubbed    # Calculate all overlaps.
+            dubbed &= self.all_numbers  # Calculate current overlaps.
+            self.all_origin -= dubbed  # Calculate non-overlaps.
+            self.all_overlap |= dubbed  # Calculate all overlaps.
 
             curr_table_eq = len(dubbed) / (len(self.all_numbers) / 100)
             self.color_range(curr_table_eq)
@@ -59,7 +60,7 @@ class Comparer(Fixer):
 
     def result(self):
         """ Prints overall result. """
-        table_eq = len(self.all_overlap) / (len(self.all_numbers)/100)
+        table_eq = len(self.all_overlap) / (len(self.all_numbers) / 100)
         self.color_range(table_eq)
         print('[ РЕЗУЛЬТАТ СРАВНЕНИЯ ]'.center(self.win_with, '.'))
         print(f'\nОБЩЕЕ СХОДСТВО: {len(self.all_overlap):,}/{len(self.all_numbers):,} ({table_eq:.0f}%)\n')

@@ -15,6 +15,7 @@ logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("res
 
 class Fixer:
     """ Fixer. """
+
     def __init__(self):
         self.win_with = WIN_WIDTH
         self.greeting()
@@ -103,7 +104,7 @@ class Fixer:
         print()
         self.color_range(round(100 - valid_count / (all_numbers_count / 100)))
         print('[ РЕЗУЛЬТАТ ИСПРАВЛЕНИЙ ]'.center(self.win_with, '.'))
-        print(f'\nПЛОХИЕ: {junk_count + len(self.dubbed)}')
+        print(f'\nПЛОХИЕ: {junk_count + len(self.dubbed):,}')
         print(f'  ├ повторы: {len(self.dubbed):,}')
         print(f'  └ мусор: {junk_count:,}')
         print(f'\nНОМЕРА: {valid_count / (all_numbers_count / 100):.0f}% ({valid_count:,}/{all_numbers_count:,})\n')
