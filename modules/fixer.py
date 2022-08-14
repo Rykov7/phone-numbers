@@ -45,7 +45,7 @@ class Fixer:
             print("CSV в текущей папке:")
             for file in all_files:
                 file_option_string = f'  {all_files.index(file) + 1}. {str(file)}{fg("#444")}'
-                file_size_string = attr("reset") + '{:,} KB'.format(int(os.path.getsize(file) / 1024))
+                file_size_string = f'{attr("reset")}{int(os.path.getsize(file) / 1024):,} KB'
                 # Adding 15 of colored special characters.
                 print(f'{file_option_string}'.ljust(self.win_with - len(file_size_string) + 15, '.'), end='')
                 print(f'{file_size_string}')
@@ -103,11 +103,10 @@ class Fixer:
         print()
         self.color_range(round(100 - valid_count / (all_numbers_count / 100)))
         print('[ РЕЗУЛЬТАТ ИСПРАВЛЕНИЙ ]'.center(self.win_with, '.'))
-        print(f'\nВСЕГО: {all_numbers_count}')
-        print(f'ПЛОХИЕ: {junk_count + len(self.dubbed)}')
-        print(f'  ├ повторы: {len(self.dubbed)}')
-        print(f'  └ мусор: {junk_count}')
-        print(f'\nНОМЕРА: {valid_count / (all_numbers_count / 100):.0f}% ({valid_count})\n')
+        print(f'\nПЛОХИЕ: {junk_count + len(self.dubbed)}')
+        print(f'  ├ повторы: {len(self.dubbed):,}')
+        print(f'  └ мусор: {junk_count:,}')
+        print(f'\nНОМЕРА: {valid_count / (all_numbers_count / 100):.0f}% ({valid_count:,}/{all_numbers_count:,})\n')
         print(''.center(self.win_with, '-'))
         print(attr("reset"))
 
