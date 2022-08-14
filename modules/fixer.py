@@ -107,7 +107,7 @@ class Fixer:
         print(f'\nПЛОХИЕ: {junk_count + len(self.dubbed):,}')
         print(f'  ├ повторы: {len(self.dubbed):,}')
         print(f'  └ мусор: {junk_count:,}')
-        print(f'\nНОМЕРА: {valid_count / (all_numbers_count / 100):.0f}% ({valid_count:,}/{all_numbers_count:,})\n')
+        print(f'\nНОМЕРА: {valid_count / all_numbers_count:.0%} ({valid_count:,}/{all_numbers_count:,})\n')
         print(''.center(self.win_with, '-'))
         print(attr("reset"))
 
