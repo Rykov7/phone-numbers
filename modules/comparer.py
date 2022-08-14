@@ -55,7 +55,7 @@ class Comparer(Fixer):
 
             curr_table_eq = len(dubbed) / (len(self.all_numbers) / 100)
             self.color_range(curr_table_eq)
-            print(f'  └ СХОДСТВО: {len(dubbed)}/{len(self.all_numbers)} ({curr_table_eq:.0f}%)\n{attr("reset")}')
+            print(f'  └ СХОДСТВ: {len(dubbed):,} ({curr_table_eq:.0f}%)\n{attr("reset")}')
 
     def result(self):
         """ Prints overall result. """
