@@ -9,10 +9,10 @@ def make_plot(filename, title, green, blue, grey=None):
     # Data.
     if grey is not None:
         x = [green, blue, grey]
-        labels = 'Номера ({:,})'.format(green), 'Повторы ({:,})'.format(blue), 'Мусор ({:,})'.format(grey)
+        labels = f'Номера ({green:,})', f'Повторы ({blue:,})', f'Мусор ({grey:,})'
     else:
         x = [green, blue]
-        labels = 'Оригиналы ({:,})'.format(green), 'Пересечения ({:,})'.format(blue)
+        labels = f'Оригиналы ({green:,})', f'Пересечения ({blue:,})'
 
     colors = ['#52a756', '#e51c24', '#a9a9ab']
 
@@ -39,4 +39,3 @@ if __name__ == '__main__':
     from colored import bg, attr
     make_plot('numbers.png', 'numbers.csv', 1955, 300, 50)
     plt.show()
-    # plt.savefig('result.png')
