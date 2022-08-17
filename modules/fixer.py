@@ -27,7 +27,7 @@ class Fixer:
 
     def greeting(self):
         """ Program greeting. """
-        print('ИСПРАВЛЯТОР'.rjust(self.win_with))
+        print('FIXER'.rjust(self.win_with))
         print('Приводит телефонные номера к формату 79XXXXXXXXX'.rjust(self.win_with))
         print()
 
@@ -64,7 +64,7 @@ class Fixer:
         """ Reads CSV into list. """
         try:
             with open(self.filename, 'r', newline='', encoding='utf-8') as csvfile:
-                return [i[0] for i in csv.reader(csvfile,  delimiter=';') if i]
+                return [i[0] for i in csv.reader(csvfile) if i]
         except UnicodeDecodeError:
             print(f'{bg("red")}Неверная кодировка файла! Требуется UTF-8. Завершение работы.{attr("reset")}')
             sys.exit()

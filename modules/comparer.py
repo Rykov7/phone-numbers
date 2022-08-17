@@ -27,7 +27,7 @@ class Comparer(Fixer):
 
     def greeting(self):
         """ Program greeting. """
-        print('СРАВНИВАТЕЛЬ'.rjust(self.win_with))
+        print('COMPARER'.rjust(self.win_with))
         print('Сравнивает выбранную таблицу с таблицами в папке "Used"'.rjust(self.win_with))
         print()
 
