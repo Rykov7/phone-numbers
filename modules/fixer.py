@@ -62,8 +62,13 @@ class Fixer:
 
     def open_csv(self) -> list[str]:
         """ Reads CSV into list. """
-        with open(self.filename, 'r', newline='', encoding='utf-8') as csvfile:
-            return [i[0] for i in csv.reader(csvfile) if i]
+        try:
+            with open(self.filename, 'r', newline='', encoding='utf-8') as csvfile:
+                return [i[0] for i in csv.reader(csvfile,  delimiter=';') if i]
+        except UnicodeDecodeError:
+            print(f'{bg("red")}Неверная кодировка файла! Требуется UTF-8. Завершение работы.{attr("reset")}')
+            sys.exit()
+
 
     @staticmethod
     def correct_number(number: str) -> str:
