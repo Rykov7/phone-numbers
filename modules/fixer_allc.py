@@ -25,24 +25,22 @@ class MulticolumnFixer(Fixer):
         print('FIXER С СОХРАНЕНИЕМ КОЛОНОК'.rjust(self.win_with))
         print('КОДИРОВКА: WINDOWS-1251'.rjust(self.win_with))
         print('РАЗДЕЛИТЕЛЬ: ";" (ТОЧКА С ЗАПЯТОЙ)'.rjust(self.win_with))
-        print('Исправляет телефонные номера, кодировку и разделитель.'.rjust(self.win_with))
+        print('Исправляет телефонные номера в 6 столбце.'.rjust(self.win_with))
         print()
-
 
     def open_csv(self) -> list[str]:
         """ Reads CSV into list. """
         try:
             with open(self.filename, 'r', newline='', encoding='windows-1251') as csvfile:
-                return [i for i in csv.reader(csvfile,  delimiter=';') if i]
+                return [i for i in csv.reader(csvfile, dialect='excel', delimiter=';') if i][2:]
         except UnicodeDecodeError:
             print(f'{bg("red")}Неверная кодировка файла! Требуется WINDOWS-1251. Завершение работы.{attr("reset")}')
             sys.exit()
 
-
     @staticmethod
     def correct_number(number: str) -> str:
         """ Fixes a phone number to 79XXXXXXXXX format. """
-        number = number.split(',')[0]
+        number = number.split(',')[-1]
         if not number.isdigit():
             logging.info(f'{number} удалил лишние символы. ')
             for char in number:
@@ -56,33 +54,30 @@ class MulticolumnFixer(Fixer):
             return f'7' + number
         return number
 
-
-
     def fix(self):
         """ Analyses and fixes phone numbers. """
         for row in self.all_numbers:
-            number = row[0]
+            number = row[5]
             number = self.correct_number(number)
-            row = [number] + row[1:]
+            row = row[:5] + [number] + row[6:]
             if len(number) != 11 or not number.startswith('79') or not number.isdigit() or \
                     re.search(r'(\d)\1{6}', number):
                 logging.warning(f"Нашёл некорректную запись {number}")
                 self.junk.append(row)
                 continue
 
-            if number in [i[0] for i in self.valid]:
+            if number in [i[5] for i in self.valid]:
                 logging.warning(f"Нашёл дубликат {number}")
                 self.dubbed.append(row)
             else:
                 self.valid.append(row)
 
-
     @staticmethod
     def _save_rows(rows, filename):
         """ Saves number list to CSV file. """
         if rows:  # Saves csv if it isn't empty.
-            with open(filename, 'w', newline='', encoding='utf-8') as file:
-                writer = csv.writer(file)
+            with open(filename, 'w', newline='', encoding='windows-1251') as file:
+                writer = csv.writer(file, dialect='excel', delimiter=';')
                 for row in rows:
                     writer.writerow(row)
             print(f'{bg("dodger_blue_3")}[CSV] {len(rows)} шт. в файле {filename}{attr("reset")}')

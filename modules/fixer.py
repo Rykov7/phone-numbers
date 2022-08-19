@@ -121,7 +121,7 @@ class Fixer:
         """ Saves number list to CSV file. """
         if numbs:  # Saves csv if it isn't empty.
             with open(filename, 'w', newline='', encoding='utf-8') as file:
-                writer = csv.writer(file)
+                writer = csv.writer(file, dialect='excel')
                 for numb in numbs:
                     writer.writerow([numb])
             print(f'{bg("dodger_blue_3")}[CSV] {len(numbs)} шт. в файле {filename}{attr("reset")}')
