@@ -1,8 +1,12 @@
-""" Модуль config.py - конфигурация. """
+""" Module config.py - configuration. """
 import logging
 
-
-# Выбор режима логирования:
-# INFO (исправления + то что в WARNING), WARNING (дубли и ошибки). disable (выкл.)
+"""Select logging mode:
+INFO - fixings + WARNING, WARNING - dubbs and junk, disable() - disable all. """
 LOG_MODE = logging.disable()
-WIN_WIDTH = 79
+
+""" Select command line width. """
+WIN_WIDTH = 99
+
+""" Select CSV encoding. """
+ENCODING = 'windows-1251'  # utf-8 или windows-1251

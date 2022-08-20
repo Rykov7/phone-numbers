@@ -1,12 +1,11 @@
-""" Module fixer_allc.py - fixes phone numbers to 79XXXXXXXXX format and keeps all columns. """
+""" Module fixer_allc.py - fix phone numbers to 79XXXXXXXXX in 6th column, keep all columns. """
 import csv
 import os
 import sys
 import re
 import logging
-from datetime import datetime as dt
 from colored import bg, fg, attr
-from config import LOG_MODE
+from config import LOG_MODE, ENCODING
 from pie import make_plot
 from fixer import Fixer
 
@@ -22,19 +21,19 @@ class MulticolumnFixer(Fixer):
 
     def greeting(self):
         """ Program greeting. """
-        print('FIXER С СОХРАНЕНИЕМ КОЛОНОК'.rjust(self.win_with))
-        print('КОДИРОВКА: WINDOWS-1251'.rjust(self.win_with))
-        print('РАЗДЕЛИТЕЛЬ: ";" (ТОЧКА С ЗАПЯТОЙ)'.rjust(self.win_with))
+        print('EXCEL FIXER С СОХРАНЕНИЕМ КОЛОНОК'.rjust(self.win_with))
         print('Исправляет телефонные номера в 6 столбце.'.rjust(self.win_with))
         print()
 
-    def open_csv(self) -> list[str]:
+    def open_csv(self) -> list[list]:
         """ Reads CSV into list. """
         try:
-            with open(self.filename, 'r', newline='', encoding='windows-1251') as csvfile:
+            with open(self.filename, 'r', newline='', encoding=ENCODING) as csvfile:
                 return [i for i in csv.reader(csvfile, dialect='excel', delimiter=';') if i][2:]
         except UnicodeDecodeError:
-            print(f'{bg("red")}Неверная кодировка файла! Требуется WINDOWS-1251. Завершение работы.{attr("reset")}')
+            print(f'{bg("red_3a")}ОШИБКА! Неверная кодировка файла!{attr("reset")}'
+                  f'\nДля открытия требуется Excel-CSV '
+                  f'(кодировка: WINDOWS-1251, разделитель: «;»).')
             sys.exit()
 
     @staticmethod
@@ -54,12 +53,13 @@ class MulticolumnFixer(Fixer):
             return f'7' + number
         return number
 
+    @Fixer.stopwatch
     def fix(self):
         """ Analyses and fixes phone numbers. """
         for row in self.all_numbers:
             number = row[5]
             number = self.correct_number(number)
-            row = row[:5] + [number] + row[6:]
+            row = [number] + row[:5] + row[6:]
             if len(number) != 11 or not number.startswith('79') or not number.isdigit() or \
                     re.search(r'(\d)\1{6}', number):
                 logging.warning(f"Нашёл некорректную запись {number}")
@@ -75,8 +75,8 @@ class MulticolumnFixer(Fixer):
     @staticmethod
     def _save_rows(rows, filename):
         """ Saves number list to CSV file. """
-        if rows:  # Saves csv if it isn't empty.
-            with open(filename, 'w', newline='', encoding='windows-1251') as file:
+        if rows:  # Save CSVs only with data.
+            with open(filename, 'w', newline='', encoding=ENCODING) as file:
                 writer = csv.writer(file, dialect='excel', delimiter=';')
                 for row in rows:
                     writer.writerow(row)
@@ -92,12 +92,9 @@ class MulticolumnFixer(Fixer):
 
 if __name__ == '__main__':
     fixer = MulticolumnFixer()
-    start = dt.now()  # Стартовое время для определения скорости работы.
     fixer.fix()
-    end = dt.now() - start
-    print(f"Время обработки: {end.seconds} сек.")
     fixer.result()
-    fixer.save_everything()  # Сохраняет изображение с графиком.
+    fixer.save_everything()
 
     make_plot(fixer.result_dir + os.sep + fixer.filename[:-4] + '.png', fixer.filename,
               len(fixer.valid), len(fixer.dubbed), len(fixer.junk))

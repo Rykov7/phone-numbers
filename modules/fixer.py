@@ -1,4 +1,4 @@
-""" Module fixer.py - fixes phone numbers to 79XXXXXXXXX format. """
+""" Module fixer.py - fix phone numbers to 79XXXXXXXXX. """
 import csv
 import os
 import sys
@@ -7,7 +7,7 @@ import logging
 from datetime import datetime as dt
 from pathlib import Path
 from colored import bg, fg, attr
-from config import LOG_MODE, WIN_WIDTH
+from config import LOG_MODE, WIN_WIDTH, ENCODING
 from pie import make_plot
 
 logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("reset")}')
@@ -33,14 +33,14 @@ class Fixer:
 
     @staticmethod
     def _which_file(question: str, allow_range: int) -> int:
-        """ Validates file number. """
+        """ Validate file number. """
         while True:
             answer = input(question)
             if answer.isdigit() and int(answer) in range(1, allow_range + 1):
                 return int(answer)
 
     def find_new(self) -> str:
-        """ Finds all CSVs in the work directory. Returns filename string. """
+        """ Find all CSVs in the work directory. Returns filename string. """
         all_files = list(Path().glob('*.csv'))
         if all_files:
             print("CSV в текущей папке:")
@@ -55,24 +55,26 @@ class Fixer:
                 choose = self._which_file(f'Выберите файл для обработки (1): ', 1)
             else:
                 choose = self._which_file(f'Выберите файл для обработки (1-{len(all_files)}): ', len(all_files))
+            print()
             return str(all_files[choose - 1])
         else:
             print(f'Для начала работы добавьте CSV в текущую папку:\n{Path.cwd()}\n')
             sys.exit()
 
     def open_csv(self) -> list[str]:
-        """ Reads CSV into list. """
+        """ Convert CSV into list. """
         try:
-            with open(self.filename, 'r', newline='', encoding='utf-8') as csvfile:
+            with open(self.filename, 'r', newline='', encoding=ENCODING) as csvfile:
                 return [i[0] for i in csv.reader(csvfile) if i]
         except UnicodeDecodeError:
-            print(f'{bg("red")}Неверная кодировка файла! Требуется UTF-8. Завершение работы.{attr("reset")}')
+            print(f'{bg("red_3a")}ОШИБКА! Неверная кодировка файла!{attr("reset")}'
+                  f'\nДля открытия требуется стандартный CSV '
+                  f'(кодировка: UTF-8, разделитель: «,»).')
             sys.exit()
-
 
     @staticmethod
     def correct_number(number: str) -> str:
-        """ Fixes a phone number to 79XXXXXXXXX format. """
+        """ Fix phone number to 79XXXXXXXXX. """
         if not number.isdigit():
             logging.info(f'{number} удалил лишние символы. ')
             for char in number:
@@ -86,8 +88,19 @@ class Fixer:
             return f'7' + number
         return number
 
+    @staticmethod
+    def stopwatch(func):
+        def wrapper(*args):
+            start = dt.now()  # Стартовое время для определения скорости работы.
+            func(*args)
+            end = dt.now() - start
+            print(f"{fg('#444')}Время обработки: {end.seconds} сек.{attr('reset')}")
+
+        return wrapper
+
+    @stopwatch
     def fix(self):
-        """ Analyses and fixes phone numbers. """
+        """ Analyse and fix phone numbers. """
         for number in self.all_numbers:
             number = self.correct_number(number)
             if len(number) != 11 or not number.startswith('79') or not number.isdigit() or \
@@ -102,32 +115,31 @@ class Fixer:
                 self.valid.add(number)
 
     def result(self):
-        """ Prints stats REPORT. """
+        """ Print stats REPORT. """
         all_numbers_count = len(self.all_numbers)
-        junk_count = len(self.junk)  # Junk strings
-        valid_count = len(self.valid)  # Valid numbers
-        print()
-        self.color_range(round(100 - valid_count / (all_numbers_count / 100)))
+        junk_count = len(self.junk)
+        valid_count = len(self.valid)
+        self.color_range(round(100 - valid_count / (all_numbers_count / 100)))  # Set result block color.
         print('[ РЕЗУЛЬТАТ ИСПРАВЛЕНИЙ ]'.center(self.win_with, '.'))
         print(f'\nПЛОХИЕ: {junk_count + len(self.dubbed):,}')
         print(f'  ├ повторы: {len(self.dubbed):,}')
         print(f'  └ мусор: {junk_count:,}')
         print(f'\nНОМЕРА: {valid_count / all_numbers_count:.0%} ({valid_count:,}/{all_numbers_count:,})\n')
         print(''.center(self.win_with, '-'))
-        print(attr("reset"))
+        print(attr("reset"))                                                    # Reset result block color.
 
     @staticmethod
     def _save_numbers(numbs, filename):
-        """ Saves number list to CSV file. """
+        """ Save number list to CSV file. """
         if numbs:  # Saves csv if it isn't empty.
-            with open(filename, 'w', newline='', encoding='utf-8') as file:
+            with open(filename, 'w', newline='', encoding=ENCODING) as file:
                 writer = csv.writer(file, dialect='excel')
                 for numb in numbs:
                     writer.writerow([numb])
             print(f'{bg("dodger_blue_3")}[CSV] {len(numbs)} шт. в файле {filename}{attr("reset")}')
 
     def save_everything(self):
-        """ Saves all CSVs. """
+        """ Save all CSVs. """
         os.makedirs(self.result_dir, exist_ok=True)
         self._save_numbers(sorted(self.valid), self.result_dir + os.sep + self.filename[:-4] + '[valid].csv')
         self._save_numbers(set(self.dubbed), self.result_dir + os.sep + self.filename[:-4] + '[dubs].csv')
@@ -135,7 +147,7 @@ class Fixer:
 
     @staticmethod
     def color_range(numb):
-        """ Calculates text color based on stats. """
+        """ Calculate text color based on stats. """
         if numb < 4:
             print(fg("#52a7563"), end='')  # green
         elif numb < 30:
@@ -146,7 +158,7 @@ class Fixer:
             print(fg("#e51c24"), end='')  # red
 
     def russian_flag(self):
-        """ Prints Russia's flag. """
+        """ Print flag. """
         print()
         print(bg("cornsilk_1") + fg("cornsilk_1") + 'R' * self.win_with + attr("reset"))
         print(bg("dodger_blue_3") + fg("dodger_blue_3") + 'U' * self.win_with + attr("reset"))
@@ -155,12 +167,9 @@ class Fixer:
 
 if __name__ == '__main__':
     fixer = Fixer()
-    start = dt.now()  # Стартовое время для определения скорости работы.
     fixer.fix()
-    end = dt.now() - start
-    print(f"Время обработки: {end.seconds} сек.")
     fixer.result()
-    fixer.save_everything()  # Сохраняет изображение с графиком.
+    fixer.save_everything()
 
     make_plot(fixer.result_dir + os.sep + fixer.filename[:-4] + '.png', fixer.filename,
               len(fixer.valid), len(fixer.dubbed), len(fixer.junk))
