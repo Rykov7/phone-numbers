@@ -34,7 +34,11 @@ class Fixer:
         """ Program greeting. """
         print('FIXER'.rjust(self.win_with))
         print('Исправляет телефонные номера до формата 79XXXXXXXXX'.rjust(self.win_with))
-        print(f'Колонка с номерами: {COLUMN}, удаление начальных строк: {CHOP_HEAD}.'.rjust(self.win_with))
+        print(f'Колонка с номерами: {COLUMN}, удаление начальных строк: {CHOP_HEAD}'.rjust(self.win_with))
+        self.show_config()
+
+    def show_config(self):
+        print(f'Чтение: {ENCODING_READ}, запись {ENCODING_WRITE}'.rjust(self.win_with))
         print()
 
     @staticmethod

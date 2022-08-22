@@ -28,6 +28,7 @@ class Comparer(Fixer):
         """ Program greeting. """
         print('COMPARER'.rjust(self.win_with))
         print('Сравнивает выбранную таблицу с таблицами в папке "Used"'.rjust(self.win_with))
+        self.show_config()
         print()
 
     def find_used(self):
