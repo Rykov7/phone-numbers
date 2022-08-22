@@ -66,7 +66,7 @@ class Fixer:
         """ Convert CSV into list. """
         try:
             with open(self.filename, 'r', newline='', encoding=ENCODING_READ) as csvfile:
-                return [i[0] for i in csv.reader(csvfile) if i]
+                return [i[0] for i in csv.reader(csvfile, dialect='excel', delimiter=';') if i]
         except UnicodeDecodeError:
             print(f'{bg("red_3a")}ОШИБКА! Неверная кодировка файла!{attr("reset")}'
                   f'\nДля открытия требуется стандартный CSV '
@@ -132,9 +132,9 @@ class Fixer:
     @staticmethod
     def _save_numbers(numbs, filename):
         """ Save number list to CSV file. """
-        if numbs:  # Saves csv if it isn't empty.
+        if numbs:  # Save CSV if not empty.
             with open(filename, 'w', newline='', encoding=ENCODING_WRITE) as file:
-                writer = csv.writer(file, dialect='excel')
+                writer = csv.writer(file, dialect='excel', delimiter=';')
                 for numb in numbs:
                     writer.writerow([numb])
             print(f'{bg("dodger_blue_3")}[CSV] {len(numbs)} шт. в файле {filename}{attr("reset")}')

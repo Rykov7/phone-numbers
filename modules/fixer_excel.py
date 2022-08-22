@@ -6,7 +6,7 @@ import re
 import logging
 
 from colored import bg, fg, attr
-from config import LOG_MODE, ENCODING_READ, ENCODING_WRITE
+from config import LOG_MODE, ENCODING_READ, ENCODING_WRITE, COLUMN
 from pie import make_plot
 from fixer import Fixer
 
@@ -19,6 +19,7 @@ class MulticolumnFixer(Fixer):
     def __init__(self):
         super().__init__()
         self.valid = []
+        self.column = COLUMN - 1
 
     def greeting(self):
         """ Program greeting. """
@@ -32,7 +33,8 @@ class MulticolumnFixer(Fixer):
             with open(self.filename, 'r', newline='', encoding=ENCODING_READ) as csvfile:
                 return [i for i in csv.reader(csvfile, dialect='excel', delimiter=';') if i][2:]
         except UnicodeDecodeError:
-            print(f'{bg("red_3a")}ОШИБКА! Для открытия требуется Excel-CSV (разделитель: «;»)!{attr("reset")}')
+            print(f'{bg("red_3a")}ОШИБКА! Выбрана некорректная кодировка файла! '
+                  f'Нужна {ENCODING_READ}{attr("reset")}.')
             sys.exit()
 
     @staticmethod
@@ -56,16 +58,20 @@ class MulticolumnFixer(Fixer):
     def fix(self):
         """ Analyses and fixes phone numbers. """
         for row in self.all_numbers:
-            number = row[5]
+            try:
+                number = row[self.column]
+            except IndexError:
+                print('ОШИБКА! Номер колонки в настройках больше количества колонок! Выхожу.')
+                sys.exit()
             number = self.correct_number(number)
-            row = [number] + row[:5] + row[6:]
+            row = [number] + row[:self.column] + row[self.column+1:]
             if len(number) != 11 or not number.startswith('79') or not number.isdigit() or \
                     re.search(r'(\d)\1{6}', number):
                 logging.warning(f"Нашёл некорректную запись {number}")
                 self.junk.append(row)
                 continue
 
-            if number in [i[5] for i in self.valid]:
+            if number in [i[0] for i in self.valid]:
                 logging.warning(f"Нашёл дубликат {number}")
                 self.dubbed.append(row)
             else:
