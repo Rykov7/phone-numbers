@@ -6,7 +6,7 @@ import re
 import logging
 
 from colored import bg, fg, attr
-from config import LOG_MODE, ENCODING_READ, ENCODING_WRITE, COLUMN
+from config import LOG_MODE, ENCODING_READ, ENCODING_WRITE, COLUMN, CHOP_HEADER
 from pie import make_plot
 from fixer import Fixer
 
@@ -20,6 +20,7 @@ class MulticolumnFixer(Fixer):
         super().__init__()
         self.valid = []
         self.column = COLUMN - 1
+        self.chop_head = CHOP_HEADER
 
     def greeting(self):
         """ Program greeting. """
@@ -31,7 +32,7 @@ class MulticolumnFixer(Fixer):
         """ Reads CSV into list. """
         try:
             with open(self.filename, 'r', newline='', encoding=ENCODING_READ) as csvfile:
-                return [i for i in csv.reader(csvfile, dialect='excel', delimiter=';') if i][2:]
+                return [i for i in csv.reader(csvfile, dialect='excel', delimiter=';') if i][CHOP_HEADER:]
         except UnicodeDecodeError:
             print(f'{bg("red_3a")}ОШИБКА! Выбрана некорректная кодировка файла! '
                   f'Нужна {ENCODING_READ}{attr("reset")}.')
@@ -57,12 +58,11 @@ class MulticolumnFixer(Fixer):
     @Fixer.stopwatch
     def fix(self):
         """ Analyses and fixes phone numbers. """
+        if len(self.all_numbers[-1]) < self.column:
+            print('ОШИБКА! Номер колонки в настройках больше количества колонок! Выхожу.')
+            sys.exit()
         for row in self.all_numbers:
-            try:
-                number = row[self.column]
-            except IndexError:
-                print('ОШИБКА! Номер колонки в настройках больше количества колонок! Выхожу.')
-                sys.exit()
+            number = row[self.column]
             number = self.correct_number(number)
             row = [number] + row[:self.column] + row[self.column+1:]
             if len(number) != 11 or not number.startswith('79') or not number.isdigit() or \

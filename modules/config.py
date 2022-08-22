@@ -12,5 +12,8 @@ WIN_WIDTH = 89
 ENCODING_READ = 'windows-1251'
 ENCODING_WRITE = 'utf-8'
 
-""" Select Column for phone numbers. """
+""" Number of column where phone numbers are in multicolumn mode. """
 COLUMN = 6
+
+""" How much columns in Header to be chopped. """
+CHOP_HEADER = 2
