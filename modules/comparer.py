@@ -69,9 +69,9 @@ class Comparer(Fixer):
 
     def save_everything(self):
         """ Save all CSVs. """
-        os.makedirs(self.dir_result, exist_ok=True)
-        self._save_rows(self.all_origin, self.dir_result + os.sep + self.filename[:-4] + '[ORIGIN].csv')
-        self._save_rows(self.all_overlap, self.dir_result + os.sep + self.filename[:-4] + '[OVERLAP].csv')
+        os.makedirs(self.dir_result + os.sep + self.basename, exist_ok=True)
+        self._save_rows(self.all_origin, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[ORIGIN].csv')
+        self._save_rows(self.all_overlap, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[OVERLAP].csv')
 
 
 if __name__ == '__main__':
@@ -80,6 +80,6 @@ if __name__ == '__main__':
     comparer.result()
     comparer.save_everything()
 
-    make_plot(comparer.dir_result + os.sep + comparer.filename[:-4] + '.png', comparer.filename,
+    make_plot(comparer.dir_result + os.sep + comparer.basename + os.sep + comparer.basename + '.png', comparer.filename,
               len(comparer.all_origin), len(comparer.all_overlap))
     comparer.russian_flag()

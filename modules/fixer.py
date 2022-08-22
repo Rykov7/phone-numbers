@@ -25,8 +25,9 @@ class Fixer:
         self.junk, self.dubbed, = [], []
         self.valid = {}
         self.filename = self.find_new()
+        self.basename = self.filename[:-4]
         self.all_numbers = self.open_csv()
-        self.result_dir = '[FIXER]'
+        self.dir_result = '[FIXER]'
 
 
     def greeting(self):
@@ -163,10 +164,10 @@ class Fixer:
 
     def save_everything(self):
         """ Saves all CSVs. """
-        os.makedirs(self.result_dir, exist_ok=True)
-        self._save_dict(self.valid, self.result_dir + os.sep + self.filename[:-4] + '[valid].csv')
-        self._save_rows(self.dubbed, self.result_dir + os.sep + self.filename[:-4] + '[dubs].csv')
-        self._save_rows(self.junk, self.result_dir + os.sep + self.filename[:-4] + '[junk].csv')
+        os.makedirs(self.dir_result + os.sep + self.basename, exist_ok=True)
+        self._save_dict(self.valid, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[valid].csv')
+        self._save_rows(self.dubbed, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[dubs].csv')
+        self._save_rows(self.junk, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[junk].csv')
 
     @staticmethod
     def color_range(numb):
@@ -194,6 +195,6 @@ if __name__ == '__main__':
     fixer.result()
     fixer.save_everything()
 
-    make_plot(fixer.result_dir + os.sep + fixer.filename[:-4] + '.png', fixer.filename,
+    make_plot(fixer.dir_result + os.sep + fixer.basename + os.sep + fixer.basename + '.png', fixer.filename,
               len(fixer.valid), len(fixer.dubbed), len(fixer.junk))
     fixer.russian_flag()
