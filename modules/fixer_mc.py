@@ -24,8 +24,8 @@ class MulticolumnFixer(Fixer):
 
     def greeting(self):
         """ Program greeting. """
-        print('FIXER EXCEL С СОХРАНЕНИЕМ КОЛОНОК'.rjust(self.win_with))
-        print('Исправляет телефонные номера в 6 столбце.'.rjust(self.win_with))
+        print('FIXER MULTICOLUMN'.rjust(self.win_with))
+        print('Исправляет телефонные номера в выбранной колонке'.rjust(self.win_with))
         print()
 
     def open_csv(self) -> list[list]:

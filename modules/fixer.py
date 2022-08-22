@@ -29,7 +29,7 @@ class Fixer:
     def greeting(self):
         """ Program greeting. """
         print('FIXER'.rjust(self.win_with))
-        print('Приводит телефонные номера к формату 79XXXXXXXXX'.rjust(self.win_with))
+        print('Исправляет телефонные номера до формата 79XXXXXXXXX'.rjust(self.win_with))
         print()
 
     @staticmethod

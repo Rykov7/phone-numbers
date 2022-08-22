@@ -10,7 +10,7 @@ WIN_WIDTH = 89
 
 """ Select CSV encoding (utf-8 or windows-1251). """
 ENCODING_READ = 'windows-1251'
-ENCODING_WRITE = 'utf-8'
+ENCODING_WRITE = 'windows-1251'
 
 """ Number of column where phone numbers are in multicolumn mode. """
 COLUMN = 6
