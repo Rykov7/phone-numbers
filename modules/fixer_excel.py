@@ -1,11 +1,12 @@
-""" Module fixer_allc.py - fix phone numbers to 79XXXXXXXXX in 6th column, keep all columns. """
+""" Module fixer_excel.py - fix phone numbers to 79XXXXXXXXX in 6th column, keep all columns. """
 import csv
 import os
 import sys
 import re
 import logging
+
 from colored import bg, fg, attr
-from config import LOG_MODE, ENCODING
+from config import LOG_MODE, ENCODING_READ, ENCODING_WRITE
 from pie import make_plot
 from fixer import Fixer
 
@@ -21,19 +22,17 @@ class MulticolumnFixer(Fixer):
 
     def greeting(self):
         """ Program greeting. """
-        print('EXCEL FIXER С СОХРАНЕНИЕМ КОЛОНОК'.rjust(self.win_with))
+        print('FIXER EXCEL С СОХРАНЕНИЕМ КОЛОНОК'.rjust(self.win_with))
         print('Исправляет телефонные номера в 6 столбце.'.rjust(self.win_with))
         print()
 
     def open_csv(self) -> list[list]:
         """ Reads CSV into list. """
         try:
-            with open(self.filename, 'r', newline='', encoding=ENCODING) as csvfile:
+            with open(self.filename, 'r', newline='', encoding=ENCODING_READ) as csvfile:
                 return [i for i in csv.reader(csvfile, dialect='excel', delimiter=';') if i][2:]
         except UnicodeDecodeError:
-            print(f'{bg("red_3a")}ОШИБКА! Неверная кодировка файла!{attr("reset")}'
-                  f'\nДля открытия требуется Excel-CSV '
-                  f'(кодировка: WINDOWS-1251, разделитель: «;»).')
+            print(f'{bg("red_3a")}ОШИБКА! Для открытия требуется Excel-CSV (разделитель: «;»)!{attr("reset")}')
             sys.exit()
 
     @staticmethod
@@ -76,7 +75,7 @@ class MulticolumnFixer(Fixer):
     def _save_rows(rows, filename):
         """ Saves number list to CSV file. """
         if rows:  # Save CSVs only with data.
-            with open(filename, 'w', newline='', encoding=ENCODING) as file:
+            with open(filename, 'w', newline='', encoding=ENCODING_WRITE) as file:
                 writer = csv.writer(file, dialect='excel', delimiter=';')
                 for row in rows:
                     writer.writerow(row)

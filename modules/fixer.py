@@ -7,7 +7,8 @@ import logging
 from datetime import datetime as dt
 from pathlib import Path
 from colored import bg, fg, attr
-from config import LOG_MODE, WIN_WIDTH, ENCODING
+
+from config import LOG_MODE, WIN_WIDTH, ENCODING_READ, ENCODING_WRITE
 from pie import make_plot
 
 logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("reset")}')
@@ -64,7 +65,7 @@ class Fixer:
     def open_csv(self) -> list[str]:
         """ Convert CSV into list. """
         try:
-            with open(self.filename, 'r', newline='', encoding=ENCODING) as csvfile:
+            with open(self.filename, 'r', newline='', encoding=ENCODING_READ) as csvfile:
                 return [i[0] for i in csv.reader(csvfile) if i]
         except UnicodeDecodeError:
             print(f'{bg("red_3a")}ОШИБКА! Неверная кодировка файла!{attr("reset")}'
@@ -132,7 +133,7 @@ class Fixer:
     def _save_numbers(numbs, filename):
         """ Save number list to CSV file. """
         if numbs:  # Saves csv if it isn't empty.
-            with open(filename, 'w', newline='', encoding=ENCODING) as file:
+            with open(filename, 'w', newline='', encoding=ENCODING_WRITE) as file:
                 writer = csv.writer(file, dialect='excel')
                 for numb in numbs:
                     writer.writerow([numb])
