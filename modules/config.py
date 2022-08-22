@@ -16,4 +16,4 @@ ENCODING_WRITE = 'windows-1251'
 COLUMN = 6
 
 """ How much columns in Header to be chopped. """
-CHOP_HEADER = 2
+CHOP_HEAD = 2

@@ -21,8 +21,8 @@ class Comparer(Fixer):
         self.dir_result = '[COMPARER]'
         self.used_tables = self.find_used()
         self.all_overlap = set()
-        self.all_origin = set(self.all_numbers)
-        self.all_numbers = set(self.all_numbers)
+        self.all_origin = set([i[0] for i in self.all_numbers])
+        self.all_numbers = set([i[0] for i in self.all_numbers])
 
     def greeting(self):
         """ Program greeting. """
@@ -70,8 +70,8 @@ class Comparer(Fixer):
     def save_everything(self):
         """ Save all CSVs. """
         os.makedirs(self.dir_result, exist_ok=True)
-        self._save_numbers(self.all_origin, self.dir_result + os.sep + self.filename[:-4] + '[ORIGIN].csv')
-        self._save_numbers(self.all_overlap, self.dir_result + os.sep + self.filename[:-4] + '[OVERLAP].csv')
+        self._save_rows(self.all_origin, self.dir_result + os.sep + self.filename[:-4] + '[ORIGIN].csv')
+        self._save_rows(self.all_overlap, self.dir_result + os.sep + self.filename[:-4] + '[OVERLAP].csv')
 
 
 if __name__ == '__main__':

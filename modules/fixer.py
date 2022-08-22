@@ -8,7 +8,7 @@ from datetime import datetime as dt
 from pathlib import Path
 from colored import bg, fg, attr
 
-from config import LOG_MODE, WIN_WIDTH, ENCODING_READ, ENCODING_WRITE
+from config import LOG_MODE, WIN_WIDTH, ENCODING_READ, ENCODING_WRITE, CHOP_HEAD, COLUMN
 from pie import make_plot
 
 logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("reset")}')
@@ -18,18 +18,22 @@ class Fixer:
     """ Fixer. """
 
     def __init__(self):
+        self.column = COLUMN - 1
+        self.chop_head = CHOP_HEAD
         self.win_with = WIN_WIDTH
         self.greeting()
         self.junk, self.dubbed, = [], []
-        self.valid = set()
+        self.valid = {}
         self.filename = self.find_new()
         self.all_numbers = self.open_csv()
         self.result_dir = '[FIXER]'
+
 
     def greeting(self):
         """ Program greeting. """
         print('FIXER'.rjust(self.win_with))
         print('Исправляет телефонные номера до формата 79XXXXXXXXX'.rjust(self.win_with))
+        print(f'Колонка с номерами: {COLUMN}, удаление заголовков до: {CHOP_HEAD}.'.rjust(self.win_with))
         print()
 
     @staticmethod
@@ -62,18 +66,20 @@ class Fixer:
             print(f'Для начала работы добавьте CSV в текущую папку:\n{Path.cwd()}\n')
             sys.exit()
 
-    def open_csv(self) -> list[str]:
-        """ Convert CSV into list. """
+    def open_csv(self) -> list[list]:
+        """ Read CSV into list. """
         try:
             with open(self.filename, 'r', newline='', encoding=ENCODING_READ) as csvfile:
-                return [i[0] for i in csv.reader(csvfile, dialect='excel', delimiter=';') if i]
+                return [i for i in csv.reader(csvfile, dialect='excel', delimiter=';') if i][self.chop_head:]
         except UnicodeDecodeError:
-            print(f'{bg("red_3a")}ОШИБКА! Неверная кодировка файла!{attr("reset")}.')
+            print(f'{bg("red_3a")}ОШИБКА! Кодировка файла не соответствует настройке! '
+                  f'Текущая настройка на чтение: {ENCODING_READ}{attr("reset")}.')
             sys.exit()
 
     @staticmethod
     def correct_number(number: str) -> str:
         """ Fix phone number to 79XXXXXXXXX. """
+        number = number.split(',')[-1]
         if not number.isdigit():
             logging.info(f'{number} удалил лишние символы. ')
             for char in number:
@@ -99,19 +105,26 @@ class Fixer:
 
     @stopwatch
     def fix(self):
-        """ Analyse and fix phone numbers. """
-        for number in self.all_numbers:
+        """ Analyse and fixes phone numbers. """
+        columns_in_file = len(self.all_numbers[-1])
+        if columns_in_file < self.column:
+            print(f'{bg("red_3a")}ОШИБКА! Выбрана колонка {COLUMN} из {columns_in_file}. Выхожу.{attr("reset")}')
+            sys.exit()
+        for row in self.all_numbers[self.chop_head:]:
+            number = row[self.column]
             number = self.correct_number(number)
+            other_columns = row[:self.column] + row[self.column+1:]
+
             if len(number) != 11 or not number.startswith('79') or not number.isdigit() or \
                     re.search(r'(\d)\1{6}', number):
                 logging.warning(f"Нашёл некорректную запись {number}")
-                self.junk.append(number)
+                self.junk.append([number] + other_columns)
                 continue
             if number in self.valid:
                 logging.warning(f"Нашёл дубликат {number}")
-                self.dubbed.append(number)
+                self.dubbed.append([number] + other_columns)
             else:
-                self.valid.add(number)
+                self.valid[number] = other_columns
 
     def result(self):
         """ Print stats REPORT. """
@@ -127,22 +140,33 @@ class Fixer:
         print(''.center(self.win_with, '-'))
         print(attr("reset"))                                                    # Reset result block color.
 
+
     @staticmethod
-    def _save_numbers(numbs, filename):
-        """ Save number list to CSV file. """
-        if numbs:  # Save CSV if not empty.
+    def _save_rows(rows, filename):
+        """ Saves number list to CSV file. """
+        if rows:  # Save CSVs only with data.
             with open(filename, 'w', newline='', encoding=ENCODING_WRITE) as file:
                 writer = csv.writer(file, dialect='excel', delimiter=';')
-                for numb in numbs:
-                    writer.writerow([numb])
-            print(f'{bg("dodger_blue_3")}[CSV] {len(numbs)} шт. в файле {filename}{attr("reset")}')
+                for row in rows:
+                    writer.writerow(row)
+            print(f'{bg("dodger_blue_3")}[CSV] {len(rows)} шт. в файле {filename}{attr("reset")}')
+
+    @staticmethod
+    def _save_dict(dict_rows, filename):
+        """ Saves number list to CSV file. """
+        if dict_rows:  # Save CSVs only with data.
+            with open(filename, 'w', newline='', encoding=ENCODING_WRITE) as file:
+                writer = csv.writer(file, dialect='excel', delimiter=';')
+                for number, other_columns in dict_rows.items():
+                    writer.writerow([number] + other_columns)
+            print(f'{bg("dodger_blue_3")}[CSV] {len(dict_rows)} шт. в файле {filename}{attr("reset")}')
 
     def save_everything(self):
-        """ Save all CSVs. """
+        """ Saves all CSVs. """
         os.makedirs(self.result_dir, exist_ok=True)
-        self._save_numbers(sorted(self.valid), self.result_dir + os.sep + self.filename[:-4] + '[valid].csv')
-        self._save_numbers(set(self.dubbed), self.result_dir + os.sep + self.filename[:-4] + '[dubs].csv')
-        self._save_numbers(self.junk, self.result_dir + os.sep + self.filename[:-4] + '[junk].csv')
+        self._save_dict(self.valid, self.result_dir + os.sep + self.filename[:-4] + '[valid].csv')
+        self._save_rows(self.dubbed, self.result_dir + os.sep + self.filename[:-4] + '[dubs].csv')
+        self._save_rows(self.junk, self.result_dir + os.sep + self.filename[:-4] + '[junk].csv')
 
     @staticmethod
     def color_range(numb):
