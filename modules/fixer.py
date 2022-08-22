@@ -68,9 +68,7 @@ class Fixer:
             with open(self.filename, 'r', newline='', encoding=ENCODING_READ) as csvfile:
                 return [i[0] for i in csv.reader(csvfile, dialect='excel', delimiter=';') if i]
         except UnicodeDecodeError:
-            print(f'{bg("red_3a")}ОШИБКА! Неверная кодировка файла!{attr("reset")}'
-                  f'\nДля открытия требуется стандартный CSV '
-                  f'(кодировка: UTF-8, разделитель: «,»).')
+            print(f'{bg("red_3a")}ОШИБКА! Неверная кодировка файла!{attr("reset")}.')
             sys.exit()
 
     @staticmethod
