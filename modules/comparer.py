@@ -52,7 +52,7 @@ class Comparer(Fixer):
                 dubbed = {i[0] for i in csv.reader(csvfile)}
 
             dubbed &= self.all_numbers  # Detect current overlaps.
-            self.all_origin -= dubbed   # Detect non-overlaps.
+            self.all_origin -= dubbed  # Detect non-overlaps.
             self.all_overlap |= dubbed  # Detect all overlaps.
 
             curr_table_eq = len(dubbed) / (len(self.all_numbers) / 100)
@@ -71,8 +71,10 @@ class Comparer(Fixer):
     def save_everything(self):
         """ Save all CSVs. """
         os.makedirs(self.dir_result + os.sep + self.basename, exist_ok=True)
-        self._save_rows(self.all_origin, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[ORIGIN].csv')
-        self._save_rows(self.all_overlap, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[OVERLAP].csv')
+        self._save_rows(self.all_origin,
+                        self.dir_result + os.sep + self.basename + os.sep + self.basename + '[ORIGIN].csv')
+        self._save_rows(self.all_overlap,
+                        self.dir_result + os.sep + self.basename + os.sep + self.basename + '[OVERLAP].csv')
 
 
 if __name__ == '__main__':

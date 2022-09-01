@@ -29,7 +29,6 @@ class Fixer:
         self.all_numbers = self.open_csv()
         self.dir_result = '[FIXER]'
 
-
     def greeting(self):
         """ Program greeting. """
         print('FIXER'.rjust(self.win_with))
@@ -62,7 +61,7 @@ class Fixer:
                 print(f'{file_size_string}')
             print()
             if len(all_files) == 1:
-                choose = self._which_file(f'Выберите файл для обработки (1): ', 1)
+                choose = 1
             else:
                 choose = self._which_file(f'Выберите файл для обработки (1-{len(all_files)}): ', len(all_files))
             print()
@@ -118,7 +117,7 @@ class Fixer:
         for row in self.all_numbers[self.chop_head:]:
             number = row[self.column]
             number = self.correct_number(number)
-            other_columns = row[:self.column] + row[self.column+1:]
+            other_columns = row[:self.column] + row[self.column + 1:]
 
             if len(number) != 11 or not number.startswith('79') or not number.isdigit() or \
                     re.search(r'(\d)\1{6}', number):
@@ -143,8 +142,7 @@ class Fixer:
         print(f'  └ мусор: {junk_count:,}')
         print(f'\nНОМЕРА: {valid_count / all_numbers_count:.0%} ({valid_count:,}/{all_numbers_count:,})\n')
         print(''.center(self.win_with, '-'))
-        print(attr("reset"))                                                    # Reset result block color.
-
+        print(attr("reset"))  # Reset result block color.
 
     @staticmethod
     def _save_rows(rows, filename):
