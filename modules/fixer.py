@@ -1,3 +1,5 @@
+#!python3
+
 """ Module fixer.py - fix phone numbers to 79XXXXXXXXX. """
 import csv
 import os

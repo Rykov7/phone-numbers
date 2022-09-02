@@ -1,3 +1,5 @@
+#!python3
+
 """ Module comparer.py - Compare tables. """
 import os
 import logging
