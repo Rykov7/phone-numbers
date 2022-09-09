@@ -34,7 +34,7 @@ class Fixer:
     def greeting(self):
         """ Program greeting. """
         print('FIXER'.rjust(self.win_with))
-        print('Исправляет телефонные номера до формата 79XXXXXXXXX'.rjust(self.win_with))
+        print('Нормализует телефонные номера'.rjust(self.win_with))
         print(f'Колонка с номерами: {COLUMN}, удаление начальных строк: {CHOP_HEAD}'.rjust(self.win_with))
         self.show_config()
 
@@ -54,7 +54,7 @@ class Fixer:
         """ Find all CSVs in the work directory. Returns filename string. """
         all_files = list(Path().glob('*.csv'))
         if all_files:
-            print("CSV в текущей папке:")
+            print("Таблицы в текущей папке:")
             for file in all_files:
                 file_option_string = f'  {all_files.index(file) + 1}. {str(file)}{fg("#444")}'
                 file_size_string = f'{attr("reset")}{int(os.path.getsize(file) / 1024):,} KB'
@@ -65,7 +65,7 @@ class Fixer:
             if len(all_files) == 1:
                 choose = 1
             else:
-                choose = self._which_file(f'Выберите файл для обработки (1-{len(all_files)}): ', len(all_files))
+                choose = self._which_file(f'Выберите таблицу для обработки (1-{len(all_files)}): ', len(all_files))
             print()
             return str(all_files[choose - 1])
         else:

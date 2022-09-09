@@ -29,7 +29,7 @@ class Comparer(Fixer):
     def greeting(self):
         """ Program greeting. """
         print('COMPARER'.rjust(self.win_with))
-        print('Сравнивает выбранную таблицу с таблицами в папке "Used"'.rjust(self.win_with))
+        print('Выводит статистику по сходству номеров'.rjust(self.win_with))
         self.show_config()
         print()
 
@@ -40,7 +40,7 @@ class Comparer(Fixer):
             for file in Path(folder_name).glob('*.csv'):
                 used_tables.append(file)
         if not used_tables:
-            print('\nВ папке Used отсутствуют CSV!')
+            print('\nВ папке Used отсутствуют CSV-файлы!')
             sys.exit()
         return used_tables
 
