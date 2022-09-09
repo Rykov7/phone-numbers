@@ -23,8 +23,8 @@ class Comparer(Fixer):
         self.dir_result = '[COMPARER]'
         self.used_tables = self.find_used()
         self.all_overlap = set()
-        self.all_origin = set([i[0] for i in self.all_numbers])
-        self.all_numbers = set([i[0] for i in self.all_numbers])
+        self.all_origin = {i[0] for i in self.all_numbers}
+        self.all_numbers = self.all_origin.copy()
 
     def greeting(self):
         """ Program greeting. """
