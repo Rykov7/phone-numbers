@@ -17,7 +17,7 @@ logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("res
 
 
 class Fixer:
-    """ Fixer. """
+    """ Fixer. Main class. """
 
     def __init__(self):
         self.column = COLUMN - 1

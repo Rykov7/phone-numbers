@@ -15,7 +15,7 @@ logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("res
 
 
 class Comparer(Fixer):
-    """ Comparer. """
+    """ Comparer. Main class. """
 
     def __init__(self):
         super().__init__()
