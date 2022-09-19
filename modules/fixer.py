@@ -10,7 +10,7 @@ from datetime import datetime as dt
 from pathlib import Path
 from colored import bg, fg, attr
 
-from config import LOG_MODE, WIN_WIDTH, ENCODING_READ, ENCODING_WRITE, CHOP_HEAD, COLUMN
+from config import LOG_MODE, WIN_WIDTH, ENCODING_READ, ENCODING_WRITE, CHOP_HEAD, COLUMN, DELIMITER
 from pie import make_plot
 
 logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("reset")}')
@@ -76,7 +76,7 @@ class Fixer:
         """ Read CSV into list. """
         try:
             with open(self.filename, 'r', newline='', encoding=ENCODING_READ) as csvfile:
-                return [i for i in csv.reader(csvfile, dialect='excel', delimiter=';') if i][self.chop_head:]
+                return [i for i in csv.reader(csvfile, dialect='excel', delimiter=DELIMITER) if i][self.chop_head:]
         except UnicodeDecodeError:
             print(f'{bg("red_3a")}ОШИБКА! Кодировка файла не соответствует настройке! '
                   f'Текущая настройка на чтение: {ENCODING_READ}{attr("reset")}.')
@@ -151,7 +151,7 @@ class Fixer:
         """ Saves number list to CSV file. """
         if rows:  # Save CSVs only with data.
             with open(filename, 'w', newline='', encoding=ENCODING_WRITE) as file:
-                writer = csv.writer(file, dialect='excel', delimiter=';')
+                writer = csv.writer(file, dialect='excel', delimiter=DELIMITER)
                 for row in rows:
                     writer.writerow(row)
             print(f'{bg("dodger_blue_3")}[CSV] {len(rows)} шт. в файле {filename}{attr("reset")}')
@@ -161,7 +161,7 @@ class Fixer:
         """ Saves number list to CSV file. """
         if dict_rows:  # Save CSVs only with data.
             with open(filename, 'w', newline='', encoding=ENCODING_WRITE) as file:
-                writer = csv.writer(file, dialect='excel', delimiter=';')
+                writer = csv.writer(file, dialect='excel', delimiter=DELIMITER)
                 for number, other_columns in dict_rows.items():
                     writer.writerow([number] + other_columns)
             print(f'{bg("dodger_blue_3")}[CSV] {len(dict_rows)} шт. в файле {filename}{attr("reset")}')

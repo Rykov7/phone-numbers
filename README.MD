@@ -40,7 +40,7 @@ _Для уверенности, что файлы соответствует т�
 По умолчанию в Windows 10/11 установлен запрет на исполнение скриптов PowerShell.
 Перед первым запуском PowerShell-скрипта на компьютере, необходимо установить политику исполнения:
 1. Откройте PowerShell с правами Администратора.
-2. Введите команду `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned`.
+2. Введите команду `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned CurrentUser` ([подробнее](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy)).
 3. В `Properties` любого файла с расширением `ps1` изменить `Open with:` на `Windows PowerShell` (C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe).
 
 Запустить модуль `Fixer.ps1` или `Comparer.ps1` в зависимости от задачи, выбрать файл из предложенных
