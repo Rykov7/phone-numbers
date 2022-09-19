@@ -154,7 +154,7 @@ class Fixer:
                 writer = csv.writer(file, dialect='excel', delimiter=DELIMITER)
                 for row in rows:
                     writer.writerow(row)
-            print(f'{bg("dodger_blue_3")}[CSV] {len(rows)} шт. в файле {filename}{attr("reset")}')
+            print(f'{fg("dodger_blue_3")}[CSV] {len(rows)} шт. в файле {filename}{attr("reset")}')
 
     @staticmethod
     def _save_dict(dict_rows, filename):
@@ -164,7 +164,7 @@ class Fixer:
                 writer = csv.writer(file, dialect='excel', delimiter=DELIMITER)
                 for number, other_columns in dict_rows.items():
                     writer.writerow([number] + other_columns)
-            print(f'{bg("dodger_blue_3")}[CSV] {len(dict_rows)} шт. в файле {filename}{attr("reset")}')
+            print(f'{fg("dodger_blue_3")}[CSV] {len(dict_rows)} шт. в файле {filename}{attr("reset")}')
 
     def save_everything(self):
         """ Saves all CSVs. """

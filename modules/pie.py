@@ -4,7 +4,7 @@
 def make_plot(filename: str, title: str, green: int, blue: int, grey=None):
     """ Build pie plot and save to PNG. """
     import matplotlib.pyplot as plt
-    from colored import bg, attr
+    from colored import fg, attr
 
     # Data.
     if grey is not None:
@@ -31,7 +31,7 @@ def make_plot(filename: str, title: str, green: int, blue: int, grey=None):
     ax.set_title(title, loc='center', fontdict={'fontsize': 9, 'color': '#59595b'})
 
     plt.savefig(filename)
-    print(f'{bg("dodger_blue_3")}[PNG] График {filename}{attr("reset")}')
+    print(f'{fg("dodger_blue_3")}[PNG] График {filename}{attr("reset")}')
 
 
 if __name__ == '__main__':

@@ -79,7 +79,7 @@ class Comparer(Fixer):
                 writer = csv.writer(file, dialect='excel', delimiter=DELIMITER)
                 for row in rows:
                     writer.writerow([row])
-            print(f'{bg("dodger_blue_3")}[CSV] {len(rows)} шт. в файле {filename}{attr("reset")}')
+            print(f'{fg("dodger_blue_3")}[CSV] {len(rows)} шт. в файле {filename}{attr("reset")}')
 
     def save_everything(self):
         """ Save all CSVs. """
