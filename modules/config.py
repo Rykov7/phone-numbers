@@ -13,10 +13,10 @@ ENCODING_READ = 'windows-1251'
 ENCODING_WRITE = 'windows-1251'
 
 """ Number of column where phone numbers are in multicolumn mode. """
-COLUMN = 6
+COLUMN = 1
 
 """ How much columns in Header to be chopped. """
-CHOP_HEAD = 2
+CHOP_HEAD = 0
 
 """ Delimiter for CSV. """
 DELIMITER = ';'

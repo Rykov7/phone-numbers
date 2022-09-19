@@ -8,8 +8,9 @@ from pathlib import Path
 import csv
 from colored import fg, attr
 from fixer import Fixer
-from config import LOG_MODE, ENCODING_READ, DELIMITER
+from config import LOG_MODE, ENCODING_READ, DELIMITER, ENCODING_WRITE
 from pie import make_plot
+from colored import bg
 
 logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("reset")}')
 
@@ -69,6 +70,16 @@ class Comparer(Fixer):
         print(f'\nОБЩЕЕ СХОДСТВО: {len(self.all_overlap):,}/{len(self.all_numbers):,} ({table_eq:.0f}%)\n')
         print(''.center(self.win_with, '-'))
         print(attr("reset"))
+
+    @staticmethod
+    def _save_rows(rows, filename):
+        """ Saves number list to CSV file. """
+        if rows:  # Save CSVs only with data.
+            with open(filename, 'w', newline='', encoding=ENCODING_WRITE) as file:
+                writer = csv.writer(file, dialect='excel', delimiter=DELIMITER)
+                for row in rows:
+                    writer.writerow([row])
+            print(f'{bg("dodger_blue_3")}[CSV] {len(rows)} шт. в файле {filename}{attr("reset")}')
 
     def save_everything(self):
         """ Save all CSVs. """
