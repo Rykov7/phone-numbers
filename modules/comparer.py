@@ -62,6 +62,9 @@ class Comparer(Fixer):
             self.color_range(curr_table_eq)
             print(f'  └ СХОДСТВ: {len(dubbed):,} ({curr_table_eq:.0f}%)\n{attr("reset")}')
 
+        self.all_origin = [[i] for i in self.all_origin]
+        self.all_overlap = [[i] for i in self.all_overlap]
+
     def result(self):
         """ Print overall result. """
         table_eq = len(self.all_overlap) / (len(self.all_numbers) / 100)
@@ -70,16 +73,6 @@ class Comparer(Fixer):
         print(f'\nОБЩЕЕ СХОДСТВО: {len(self.all_overlap):,}/{len(self.all_numbers):,} ({table_eq:.0f}%)\n')
         print(''.center(self.win_with, '-'))
         print(attr("reset"))
-
-    @staticmethod
-    def _save_rows(rows, filename):
-        """ Saves number list to CSV file. """
-        if rows:  # Save CSVs only with data.
-            with open(filename, 'w', newline='', encoding=ENCODING_WRITE) as file:
-                writer = csv.writer(file, dialect='excel', delimiter=DELIMITER)
-                for row in rows:
-                    writer.writerow([row])
-            print(f'{fg("dodger_blue_3")}[CSV] {len(rows)} шт. в файле {filename}{attr("reset")}')
 
     def save_everything(self):
         """ Save all CSVs. """

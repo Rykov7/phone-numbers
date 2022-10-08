@@ -121,8 +121,8 @@ class Fixer:
             number = self.correct_number(number)
             other_columns = row[:self.column] + row[self.column + 1:]
 
-            if len(number) != 11 or not number.startswith('79') or not number.isdigit() or \
-                    re.search(r'(\d)\1{6}', number):
+            if (len(number) != 11 or not number.startswith('79') or not number.isdigit() or
+                    re.search(r'(\d)\1{6}', number)):
                 logging.warning(f"Нашёл некорректную запись {number}")
                 self.junk.append([number] + other_columns)
                 continue
