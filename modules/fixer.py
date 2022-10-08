@@ -28,7 +28,7 @@ class Fixer:
         self.valid = {}
         self.filename = self.find_new()
         self.basename = self.filename[:-4]
-        self.all_numbers = self.open_csv()
+        self.all_columns = self.open_csv()
         self.dir_result = '[FIXER]'
 
     def greeting(self):
@@ -70,7 +70,7 @@ class Fixer:
             return str(all_files[choose - 1])
         else:
             print(f'Для начала работы добавьте CSV в текущую папку:\n{Path.cwd()}\n')
-            sys.exit()
+            sys.exit(1)
 
     def open_csv(self) -> list[list]:
         """ Read CSV into list. """
@@ -78,9 +78,9 @@ class Fixer:
             with open(self.filename, 'r', newline='', encoding=ENCODING_READ) as csvfile:
                 return [i for i in csv.reader(csvfile, dialect='excel', delimiter=DELIMITER) if i][self.chop_head:]
         except UnicodeDecodeError:
-            print(f'{bg("red_3a")}ОШИБКА! Кодировка файла не соответствует настройке! '
+            print(f'{fg("red_3a")}ОШИБКА! Кодировка файла не соответствует настройке! '
                   f'Текущая настройка на чтение: {ENCODING_READ}{attr("reset")}.')
-            sys.exit()
+            sys.exit(1)
 
     @staticmethod
     def correct_number(number: str) -> str:
@@ -112,11 +112,11 @@ class Fixer:
     @stopwatch
     def fix(self):
         """ Analyse and fixes phone numbers. """
-        columns_in_file = len(self.all_numbers[-1])
+        columns_in_file = len(self.all_columns[-1])
         if columns_in_file < self.column:
-            print(f'{bg("red_3a")}ОШИБКА! Выбрана колонка {COLUMN} из {columns_in_file}. Выхожу.{attr("reset")}')
+            print(f'{fg("red_3a")}ОШИБКА! Выбрана колонка {COLUMN} из {columns_in_file}. Выхожу.{attr("reset")}')
             sys.exit()
-        for row in self.all_numbers[self.chop_head:]:
+        for row in self.all_columns[self.chop_head:]:
             number = row[self.column]
             number = self.correct_number(number)
             other_columns = row[:self.column] + row[self.column + 1:]
@@ -134,7 +134,7 @@ class Fixer:
 
     def result(self):
         """ Print stats REPORT. """
-        all_numbers_count = len(self.all_numbers)
+        all_numbers_count = len(self.all_columns)
         junk_count = len(self.junk)
         valid_count = len(self.valid)
         self.color_range(round(100 - valid_count / (all_numbers_count / 100)))  # Set result block color.
