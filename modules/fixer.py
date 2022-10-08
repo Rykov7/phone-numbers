@@ -6,6 +6,7 @@ import os
 import sys
 import re
 import logging
+import webbrowser
 from datetime import datetime as dt
 from pathlib import Path
 from colored import bg, fg, attr
@@ -191,6 +192,8 @@ class Fixer:
         print(bg("cornsilk_1") + fg("cornsilk_1") + 'R' * self.win_with + attr("reset"))
         print(bg("dodger_blue_3") + fg("dodger_blue_3") + 'U' * self.win_with + attr("reset"))
         print(bg("red_3a") + fg("red_3a") + 'S' * self.win_with + attr("reset"))
+
+        webbrowser.open('file:///' + os.path.abspath(self.dir_result + os.sep + self.basename))
 
 
 if __name__ == '__main__':
