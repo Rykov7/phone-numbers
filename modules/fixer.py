@@ -132,7 +132,7 @@ class Fixer:
                 self.dubbed.append([number] + other_columns)
             else:
                 self.valid[number] = other_columns
-        self.valid = [[number, rest] for number, rest in self.valid.items()]
+        self.valid = [[number, *rest] for number, rest in self.valid.items()]
 
     def print_result(self):
         """ Print stats REPORT. """
