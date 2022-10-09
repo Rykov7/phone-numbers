@@ -124,16 +124,17 @@ class Fixer:
 
             if (len(number) != 11 or not number.startswith('79') or not number.isdigit() or
                     re.search(r'(\d)\1{6}', number)):
-                logging.warning(f"Нашёл некорректную запись {number}")
+                logging.warning(f"Некорректная запись: {number}")
                 self.junk.append([number] + other_columns)
                 continue
             if number in self.valid:
-                logging.warning(f"Нашёл дубликат {number}")
+                logging.warning(f"Дубликат: {number}")
                 self.dubbed.append([number] + other_columns)
             else:
                 self.valid[number] = other_columns
+        self.valid = [[number, rest] for number, rest in self.valid.items()]
 
-    def result(self):
+    def print_result(self):
         """ Print stats REPORT. """
         all_numbers_count = len(self.all_columns)
         junk_count = len(self.junk)
@@ -157,22 +158,13 @@ class Fixer:
                     writer.writerow(row)
             print(f'{fg("dodger_blue_3")}[CSV] {len(rows)} шт. в файле {filename}{attr("reset")}')
 
-    @staticmethod
-    def _save_dict(dict_rows, filename):
-        """ Saves number list to CSV file. """
-        if dict_rows:  # Save CSVs only with data.
-            with open(filename, 'w', newline='', encoding=ENCODING_WRITE) as file:
-                writer = csv.writer(file, dialect='excel', delimiter=DELIMITER)
-                for number, other_columns in dict_rows.items():
-                    writer.writerow([number] + other_columns)
-            print(f'{fg("dodger_blue_3")}[CSV] {len(dict_rows)} шт. в файле {filename}{attr("reset")}')
-
     def save_everything(self):
         """ Saves all CSVs. """
         os.makedirs(self.dir_result + os.sep + self.basename, exist_ok=True)
-        self._save_dict(self.valid, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[valid].csv')
+        self._save_rows(self.valid, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[valid].csv')
         self._save_rows(self.dubbed, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[dubs].csv')
         self._save_rows(self.junk, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[junk].csv')
+        webbrowser.open('file:///' + os.path.abspath(self.dir_result + os.sep + self.basename))
 
     @staticmethod
     def color_range(numb):
@@ -186,22 +178,20 @@ class Fixer:
         else:
             print(fg("#e51c24"), end='')  # red
 
-    def russian_flag(self):
+    def print_flag(self):
         """ Print flag. """
         print()
         print(bg("cornsilk_1") + fg("cornsilk_1") + 'R' * self.win_with + attr("reset"))
         print(bg("dodger_blue_3") + fg("dodger_blue_3") + 'U' * self.win_with + attr("reset"))
         print(bg("red_3a") + fg("red_3a") + 'S' * self.win_with + attr("reset"))
 
-        webbrowser.open('file:///' + os.path.abspath(self.dir_result + os.sep + self.basename))
-
 
 if __name__ == '__main__':
     fixer = Fixer()
     fixer.fix()
-    fixer.result()
+    fixer.print_result()
     fixer.save_everything()
 
     make_plot(fixer.dir_result + os.sep + fixer.basename + os.sep + fixer.basename + '.png', fixer.filename,
               len(fixer.valid), len(fixer.dubbed), len(fixer.junk))
-    fixer.russian_flag()
+    fixer.print_flag()
