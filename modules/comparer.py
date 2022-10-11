@@ -101,4 +101,4 @@ if __name__ == '__main__':
 
     make_plot(comparer.dir_result + os.sep + comparer.basename + os.sep + comparer.basename + '.png', comparer.filename,
               len(comparer.unique), len(comparer.overlaps))
-    comparer.russian_flag()
+    comparer.print_flag()
