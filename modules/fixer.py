@@ -49,6 +49,7 @@ class Fixer:
         while True:
             answer = input(question)
             if answer.isdigit() and int(answer) in range(1, allow_range + 1):
+                os.system('cls')
                 return int(answer)
 
     def find_new(self) -> str:
@@ -67,7 +68,7 @@ class Fixer:
                 choose = 1
             else:
                 choose = self._which_file(f'Выберите таблицу для обработки (1-{len(all_files)}): ', len(all_files))
-            print()
+            print(f'{all_files[choose - 1]} ({int(os.path.getsize(file) / 1024):,} KB)', end='\n\n')
             return str(all_files[choose - 1])
         else:
             print(f'Для начала работы добавьте CSV в текущую папку:\n{Path.cwd()}\n')
@@ -165,7 +166,6 @@ class Fixer:
         self._save_rows(self.dubbed, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[dubs].csv')
         self._save_rows(self.junk, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[junk].csv')
 
-
     @staticmethod
     def color_range(numb):
         """ Calculate text color based on stats. """
@@ -185,6 +185,7 @@ class Fixer:
         print(bg("dodger_blue_3") + fg("dodger_blue_3") + 'U' * self.win_with + attr("reset"))
         print(bg("red_3a") + fg("red_3a") + 'S' * self.win_with + attr("reset"))
         webbrowser.open('file:///' + os.path.abspath(self.dir_result + os.sep + self.basename))
+
 
 if __name__ == '__main__':
     fixer = Fixer()
