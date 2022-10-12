@@ -49,7 +49,7 @@ class Fixer:
         while True:
             answer = input(question)
             if answer.isdigit() and int(answer) in range(1, allow_range + 1):
-                os.system('cls')
+                not os.system('cls') or not os.system('clear')  # clear screen Win and Unix
                 return int(answer)
 
     def find_new(self) -> str:
