@@ -94,11 +94,15 @@ class Comparer(Fixer):
 
 
 if __name__ == '__main__':
-    comparer = Comparer()
-    comparer.compare()
-    comparer.result()
-    comparer.save_everything()
+    q = ''
+    while q.lower() not in ('q', 'й'):
+        comparer = Comparer()
+        comparer.compare()
+        comparer.result()
+        comparer.save_everything()
 
-    make_plot(comparer.dir_result + os.sep + comparer.basename + os.sep + comparer.basename + '.png', comparer.filename,
-              len(comparer.unique), len(comparer.overlaps))
-    comparer.print_flag()
+        make_plot(comparer.dir_result + os.sep + comparer.basename + os.sep + comparer.basename + '.png',
+                  comparer.filename, len(comparer.unique), len(comparer.overlaps))
+        comparer.print_flag()
+        q = input('ENTER чтобы выбрать другую таблицу (Q - выход): ')
+        os.system('cls') and os.system('clear')

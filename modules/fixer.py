@@ -49,8 +49,10 @@ class Fixer:
         while True:
             answer = input(question)
             if answer.isdigit() and int(answer) in range(1, allow_range + 1):
-                not os.system('cls') or not os.system('clear')  # clear screen Win and Unix
+                os.system('cls') and os.system('clear')  # clear screen Win and Unix
                 return int(answer)
+            if answer.lower() in ('q', 'й'):
+                sys.exit()
 
     def find_new(self) -> str:
         """ Find all CSVs in the work directory. Returns filename string. """
@@ -67,8 +69,9 @@ class Fixer:
             if len(all_files) == 1:
                 choose = 1
             else:
-                choose = self._which_file(f'Выберите таблицу для обработки (1-{len(all_files)}): ', len(all_files))
-            print(f'{all_files[choose - 1]} ({int(os.path.getsize(file) / 1024):,} KB)', end='\n\n')
+                choose = self._which_file(f'Выберите таблицу для обработки из 1-{len(all_files)} (Q - выход): ', len(all_files))
+            print(f'{all_files[choose - 1]} ({int(os.path.getsize(file) / 1024):,} KB)')
+            print(self.win_with * '.', end='\n\n')
             return str(all_files[choose - 1])
         else:
             print(f'Для начала работы добавьте CSV в текущую папку:\n{Path.cwd()}\n')
@@ -188,11 +191,16 @@ class Fixer:
 
 
 if __name__ == '__main__':
-    fixer = Fixer()
-    fixer.fix()
-    fixer.print_result()
-    fixer.save_everything()
+    q = ''
+    while q.lower() not in ('q', 'й'):
+        fixer = Fixer()
+        fixer.fix()
+        fixer.print_result()
+        fixer.save_everything()
 
-    make_plot(fixer.dir_result + os.sep + fixer.basename + os.sep + fixer.basename + '.png', fixer.filename,
-              len(fixer.valid), len(fixer.dubbed), len(fixer.junk))
-    fixer.print_flag()
+        make_plot(fixer.dir_result + os.sep + fixer.basename + os.sep + fixer.basename + '.png', fixer.filename,
+                  len(fixer.valid), len(fixer.dubbed), len(fixer.junk))
+        fixer.print_flag()
+        q = input('ENTER чтобы выбрать другую таблицу (Q - выход): ')
+
+        os.system('cls') and os.system('clear')
