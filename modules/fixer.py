@@ -69,8 +69,9 @@ class Fixer:
             if len(all_files) == 1:
                 choose = 1
             else:
-                choose = self._which_file(f'Выберите таблицу для обработки из 1-{len(all_files)} (Q - выход): ', len(all_files))
-            print(f'{all_files[choose - 1]} ({int(os.path.getsize(file) / 1024):,} KB)')
+                choose = self._which_file(f'Выберите таблицу для обработки из 1-{len(all_files)} (Q - выход): ',
+                                          len(all_files))
+            print(f'{all_files[choose - 1]} ({int(os.path.getsize(all_files[choose - 1]) / 1024):,} KB)')
             print(self.win_with * '.', end='\n\n')
             return str(all_files[choose - 1])
         else:
