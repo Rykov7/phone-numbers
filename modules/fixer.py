@@ -7,7 +7,7 @@ import sys
 import re
 import logging
 import webbrowser
-from datetime import datetime as dt
+import time
 from pathlib import Path
 from colored import bg, fg, attr
 
@@ -107,11 +107,11 @@ class Fixer:
 
     @staticmethod
     def stopwatch(func):
-        def wrapper(*args):
-            start = dt.now()  # Стартовое время для определения скорости работы.
-            func(*args)
-            end = dt.now() - start
-            print(f"{fg('#444')}Время обработки: {end.seconds} сек.{attr('reset')}")
+        def wrapper(*args, **kwargs):
+            start = time.perf_counter()
+            func(*args, *kwargs)
+            elapsed = time.perf_counter() - start
+            print(f"{fg('#444')}Время обработки: {elapsed:.3f} сек.{attr('reset')}")
 
         return wrapper
 
