@@ -21,7 +21,7 @@
 4. Создать виртуальную среду:
 `py -m venv .venv` (Windows) или `python -m venv .venv` (Linux/MacOS/Windows с python в PATH)
 5. Активировать виртуальную среду:
-`.\.venv\Scripts\activate` (Windows) или `source . \.venv\bin\activate` (Linux/MacOS)
+`.\.venv\Scripts\activate` (Windows) или `source .\.venv\bin\activate` (Linux/MacOS)
 6. Установить зависимости:
 `pip install -r requirements.txt`
 
