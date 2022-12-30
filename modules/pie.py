@@ -1,4 +1,4 @@
-""" Module pie.py - build pie chart. """
+""" Build pie chart. """
 
 
 def make_plot(filename: str, title: str, green: int, blue: int, grey=None):
@@ -36,7 +36,6 @@ def make_plot(filename: str, title: str, green: int, blue: int, grey=None):
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    from colored import bg, attr
 
     make_plot('numbers.png', 'numbers.csv', 1955, 300, 50)
     plt.show()

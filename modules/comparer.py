@@ -1,13 +1,15 @@
 #!python3
 
-""" Module comparer.py - Compare tables. """
+""" Compare tables. """
 import os
 import logging
 import sys
 from pathlib import Path
 import csv
 from colored import fg, attr
+
 from fixer import Fixer
+from stopwatch import stopwatch
 from config import LOG_MODE, ENCODING_READ, DELIMITER
 from pie import make_plot
 
@@ -53,9 +55,9 @@ class Comparer(Fixer):
                                  '79XXXXXXXXX. Вероятно выбран невалидный файл!' + attr('reset'))
             sys.exit(1)
 
-    @Fixer.stopwatch
+    @stopwatch
     def compare(self):
-        self.test_number(list(self.all_numbers)[-1])
+        Comparer.test_number(list(self.all_numbers)[-1])
 
         """ Compare the table to the data-sets. """
         for used_table in self.used_tables:
@@ -69,7 +71,7 @@ class Comparer(Fixer):
             self.overlaps |= dubbed  # Detect all overlaps.
 
             curr_table_eq = len(dubbed) / (len(self.all_columns) / 100)
-            self.color_range(curr_table_eq)
+            Fixer.color_range(curr_table_eq)
             print(f'  └ СХОДСТВ: {len(dubbed):,} ({curr_table_eq:.0f}%)\n{attr("reset")}')
 
         self.unique = [i for i in self.all_columns if i[0] in self.unique]
@@ -78,7 +80,7 @@ class Comparer(Fixer):
     def result(self):
         """ Print overall result. """
         table_eq = len(self.overlaps) / (len(self.all_columns) / 100)
-        self.color_range(table_eq)
+        Fixer.color_range(table_eq)
         print('[ РЕЗУЛЬТАТ СРАВНЕНИЯ ]'.center(self.win_with, '.'))
         print(f'\nОБЩЕЕ СХОДСТВО: {len(self.overlaps):,}/{len(self.all_numbers):,} ({table_eq:.0f}%)\n')
         print(''.center(self.win_with, '-'))
@@ -87,9 +89,9 @@ class Comparer(Fixer):
     def save_everything(self):
         """ Save all CSVs. """
         os.makedirs(self.dir_result + os.sep + self.basename, exist_ok=True)
-        self._save_rows(self.unique,
+        Fixer.save_rows(self.unique,
                         self.dir_result + os.sep + self.basename + os.sep + self.basename + '[UNIQUE].csv')
-        self._save_rows(self.overlaps,
+        Fixer.save_rows(self.overlaps,
                         self.dir_result + os.sep + self.basename + os.sep + self.basename + '[OVERLAP].csv')
 
 
