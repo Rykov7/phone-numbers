@@ -50,8 +50,8 @@
 Запустите модуль `Fixer` или `Comparer` в зависимости от задачи, выбрать файл из предложенных
 (предлагаются файлы из текущей рабочей папки).
 Разрешения для разных ОС:
-* .ps1 - Windows (PowerShell Script)
-* .command - MacOS (Mac Script), Linux
+* .ps1 - PowerShell Script (Windows)
+* .command - Mac Script (MacOS/Linux)
 
 ***
 ### Выбор режима логирования (отображение большого количества логов существенно замедляет обработку)
