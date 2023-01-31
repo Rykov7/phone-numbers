@@ -31,7 +31,12 @@
 `pip install -r requirements.txt`
 6. Переместите использованные таблицы в папку Used.
 7. Поместите нужную для анализа файл-таблицу в рабочую папку (папка, из которой запускаются скрипты).
-8. MacOS: разрешите исполнение файлов `chmod +x Fixer.command` и `chmod +x Comparer.command`, Windows: см. Использование
+8. Разрешите исполнение скриптов:
+   * MacOS: разрешите исполнение файлов `chmod +x Fixer.command` и `chmod +x Comparer.command`
+   * Windows: установите политику исполнения:
+     1. Откройте PowerShell с правами Администратора.
+     2. Введите команду `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned CurrentUser` ([подробнее](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy)).
+     3. В `Properties` любого файла с расширением `ps1` изменить `Open with:` на `Windows PowerShell` (C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe).
 
 ### Требования к таблицам
 
@@ -41,12 +46,8 @@
 
 ***
 ### Использование
-По умолчанию в Windows установлен запрет на исполнение скриптов PowerShell.
-Перед первым запуском PowerShell-скрипта необходимо установить политику исполнения:
-1. Откройте PowerShell с правами Администратора.
-2. Введите команду `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned CurrentUser` ([подробнее](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy)).
-3. В `Properties` любого файла с расширением `ps1` изменить `Open with:` на `Windows PowerShell` (C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe).
-4. Запустите модуль `Fixer` или `Comparer` в зависимости от задачи, выбрать файл из предложенных
+
+Запустите модуль `Fixer` или `Comparer` в зависимости от задачи, выбрать файл из предложенных
 (предлагаются файлы из текущей рабочей папки).
 Разрешения для разных ОС:
 * .ps1 - Windows (PowerShell Script)
