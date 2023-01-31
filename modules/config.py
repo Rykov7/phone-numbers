@@ -9,7 +9,7 @@ LOG_LEV = logging.disable()
 WIN_WIDTH = 79
 
 """ Select CSV encoding (utf-8 or windows-1251). """
-ENCODINGS_READ = ['utf-8', 'windows-1251']
+ENCODINGS_READ = 'utf-8', 'windows-1251'
 ENCODING_WRITE = 'utf-8'
 
 """ Number of column where phone numbers are in multicolumn mode. """
