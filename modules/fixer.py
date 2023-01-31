@@ -35,8 +35,7 @@ class Fixer:
     def greeting(self):
         """ Greet. """
         print('FIXER'.rjust(self.win_with))
-        print('Нормализует телефонные номера'.rjust(self.win_with))
-        print(f'Колонка: {COLUMN}'.rjust(self.win_with))
+        print(f'Нормализует телефонные номера в колонке: {COLUMN}'.rjust(self.win_with))
         self.show_config()
 
     def show_config(self):
@@ -77,7 +76,7 @@ class Fixer:
             print(f'Для начала работы добавьте CSV в текущую папку:\n{Path.cwd()}\n')
             sys.exit(1)
 
-    def open_csv(self) -> list[list]:
+    def open_csv(self):
         """ Read CSV into list. """
         for enc_read in ENCODINGS_READ:
             try:
@@ -179,8 +178,11 @@ class Fixer:
             os.startfile(path)
         elif platform.system() == 'Darwin':
             subprocess.Popen(['open', path])
-        else:
-            subprocess.Popen(['xdg-open', path])
+        elif platform.system() == 'Linux':
+            try:
+                subprocess.Popen(['xdg-open', path])
+            except FileNotFoundError:
+                pass
 
     def print_flag(self):
         """ Print flag. """

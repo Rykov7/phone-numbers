@@ -19,10 +19,12 @@
 2. Распаковать архив с программой.
 3. В папке с программой: `ПКМ` > `Open in Terminal`
 4. Создать виртуальную среду:
-`py -m venv .venv` (Windows) или `python -m venv .venv` (Linux/MacOS/Windows с python в PATH)
+`py -m venv .venv` (Windows) или `python -m venv .venvu` (Linux/MacOS/Windows с python в PATH)
 5. Активировать виртуальную среду:
-`.\.venv\Scripts\activate` (Windows) или `source ./.venv/bin/activate` (Linux/MacOS)
-6. Установить зависимости:
+`.\.venv\Scripts\activate` (Windows) или `source ./.venvu/bin/activate` (Linux/MacOS)
+6. Установить wheel:
+`pip install wheel`
+7. Установить зависимости:
 `pip install -r requirements.txt`
 
 8. Переместить таблицы, по отношению к которым предстоит сравнивать, в папку Used.*
@@ -61,11 +63,11 @@ _Для полной валидации файлов рекомендуется 
 Пример: `LOG_MODE = logging.INFO`
 
 
-### Выбор кодировки на чтение и запись
-В файле настроек `config.py` указать в строке: `ENCODING_READ (или ENCODING_WRITE) = <encoding>` нужную кодировку.
+### Выбор кодировки на запись
+В файле настроек `config.py` указать в строке: `ENCODING_WRITE = <encoding>` нужную кодировку.
 
 
-### Ширина вывода строк в консоли
+### Ширина вывода строк в терминале
 Как настроить:
 
 1. _Настройка ширины вывода строк в CMD:_
@@ -77,7 +79,3 @@ _Для полной валидации файлов рекомендуется 
 
 ### Выбор колонки (для FIXER):
 В `config.py` установить значение `COLUMN` на номер колонки, где содержатся телефоны.
-
-
-### Игнорирование строк в начале файла (для FIXER):
-В `config.py` установить значение `CHOP_HEAD` на нужное количество строк.
