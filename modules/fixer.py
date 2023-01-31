@@ -103,6 +103,7 @@ class Fixer:
         return number
 
     def run_test(self):
+        """ Test given table width to exclude IndexError. """
         for i, row in enumerate(self.all_columns):
             if len(row) < COLUMN:
                 del self.all_columns[i]
@@ -173,6 +174,7 @@ class Fixer:
             print(fg("#e51c24"), end='')  # red
 
     def open_on_complete(self):
+        """ Open results' directory after the end. """
         path = os.path.abspath(self.dir_result + os.sep + self.basename)
         if platform.system() == 'Windows':
             os.startfile(path)

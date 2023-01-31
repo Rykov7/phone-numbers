@@ -54,11 +54,10 @@ class Comparer(Fixer):
 
     @stopwatch
     def compare(self):
-        Comparer.test_number(list(self.all_numbers)[-1])
+        self.test_number(list(self.all_numbers)[-1])
 
-        """ Compare the table to the data-sets. """
+        """ Compare the table to the Used data-sets. """
         for used_table in self.used_tables:
-            """ Проход по CSV-файлам в Used. """
             print(f"{used_table}")
             for enc_read in ENCODINGS_READ:
                 try:
