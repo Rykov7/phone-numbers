@@ -51,8 +51,7 @@
 (предлагаются файлы из текущей рабочей папки).
 Разрешения для разных ОС:
 * .ps1 - Windows (PowerShell Script)
-* .sh - Linux (Shell Script)
-* .command - MacOS (Mac Script)
+* .command - MacOS (Mac Script), Linux
 
 ***
 ### Выбор режима логирования (отображение большого количества логов существенно замедляет обработку)
