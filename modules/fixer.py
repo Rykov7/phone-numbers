@@ -124,8 +124,7 @@ class Fixer:
                     re.search(r'(\d)\1{6}', number)):
                 logging.warning(f"Некорректная запись: {number}")
                 self.junk.append([number] + other_columns)
-                continue
-            if number in self.valid:
+            elif number in self.valid:
                 logging.warning(f"Дубликат: {number}")
                 self.dubbed.append([number] + other_columns)
             else:
