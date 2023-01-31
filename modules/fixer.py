@@ -22,7 +22,6 @@ class Fixer:
     """ Fixer. Main class. """
 
     def __init__(self):
-        self.column = COLUMN - 1
         self.win_with = WIN_WIDTH
         self.greeting()
         self.junk, self.dubbed, = [], []
@@ -31,6 +30,8 @@ class Fixer:
         self.basename = self.filename[:-4]
         self.all_columns = self.open_csv()
         self.dir_result = '[FIXER]'
+        self.column = 0
+        self.column_max = len(self.all_columns[-1])
 
     def greeting(self):
         """ Greet. """
@@ -42,7 +43,7 @@ class Fixer:
         print(f'Чтение: автоопределение, запись {ENCODING_WRITE}'.rjust(self.win_with))
         print()
 
-    def which_file(self, question: str, allow_range: int) -> int:
+    def select_number(self, question: str, allow_range: int) -> int:
         """ Validate file number. """
         while True:
             answer = input(question)
@@ -67,7 +68,7 @@ class Fixer:
             if len(all_files) == 1:
                 choose = 1
             else:
-                choose = self.which_file(f'Выберите таблицу для обработки из 1-{len(all_files)} (Q - выход): ',
+                choose = self.select_number(f'Выберите таблицу для обработки из 1-{len(all_files)} (Q - выход): ',
                                          len(all_files))
             print(f'{all_files[choose - 1]} ({int(os.path.getsize(all_files[choose - 1]) / 1024):,} KB)')
             print(self.win_with * '.', end='\n\n')
@@ -112,6 +113,7 @@ class Fixer:
     def fix(self):
         """ Main fixer. """
 
+        self.column = self.select_number(f'Выберите колонку с номерами (1-{self.column_max}): ', self.column_max) - 1
         self.run_test()
         for row in self.all_columns:
             number = row[self.column]
