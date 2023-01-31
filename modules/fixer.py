@@ -12,7 +12,7 @@ from pathlib import Path
 from colored import bg, fg, attr
 
 from stopwatch import stopwatch
-from config import LOG_LEV, WIN_WIDTH, ENCODINGS_READ, ENCODING_WRITE, COLUMN, DELIMITER
+from config import LOG_LEV, WIN_WIDTH, ENCODINGS_READ, ENCODING_WRITE, DELIMITER
 from pie import make_plot
 
 logging.basicConfig(level=LOG_LEV, format=f'{fg("yellow")}%(message)s{attr("reset")}')
@@ -36,7 +36,7 @@ class Fixer:
     def greet(self):
         """ Greet. """
         print('FIXER'.rjust(self.win_with))
-        print(f'Нормализует телефонные номера в колонке: {COLUMN}'.rjust(self.win_with))
+        print(f'Нормализует телефонные номера в выбранной колонке'.rjust(self.win_with))
         self.show_config()
 
     def show_config(self):
@@ -69,7 +69,7 @@ class Fixer:
                 choose = 1
             else:
                 choose = self.select_number(f'Выберите таблицу для обработки из 1-{len(all_files)} (Q - выход): ',
-                                         len(all_files))
+                                            len(all_files))
             print(f'{all_files[choose - 1]} ({int(os.path.getsize(all_files[choose - 1]) / 1024):,} KB)')
             print(self.win_with * '.', end='\n\n')
             return str(all_files[choose - 1])
@@ -106,7 +106,7 @@ class Fixer:
     def run_test(self):
         """ Test given table width to exclude IndexError. """
         for i, row in enumerate(self.all_columns):
-            if len(row) < COLUMN:
+            if len(row) < self.column + 1:
                 del self.all_columns[i]
 
     @stopwatch
