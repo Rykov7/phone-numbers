@@ -21,7 +21,8 @@
 ### Установка:
 1. В терминале перейдите в папку программой: `ПКМ` > `Open in Terminal` (Windows), `cd [ПУТЬ]` (MacOS/Linux)
 2. Создайте виртуальную среду:
-`py -m venv .venv` (Windows) или `python -m venv .venvu` (Linux/MacOS/Windows с python в PATH)
+   * Windows: `py -m venv .venv`
+   * MacOS/Linux `python -m venv .venvu` (или `python3`) в зависимости от вашей системы (`ls /bin | grep ^python`).
 3. Активируйте виртуальную среду:
 `.\.venv\Scripts\activate` (Windows) или `source ./.venvu/bin/activate` (Linux/MacOS)
 4. Установите wheel:
