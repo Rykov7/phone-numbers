@@ -137,10 +137,10 @@ class Fixer:
         valid_count = len(self.valid)
         self.color_range(round(100 - valid_count / (all_numbers_count / 100)))  # Set result block color.
         print('[ РЕЗУЛЬТАТ ИСПРАВЛЕНИЙ ]'.center(self.win_with, '.'))
-        print(f'\nБРАК: {junk_count + len(self.dubbed):,}')
+        print(f'\n{valid_count / all_numbers_count:.0%} ({valid_count:,}/{all_numbers_count:,})\n')
+        print(f'БРАК: {junk_count + len(self.dubbed):,}')
         print(f'  ├ Повторы: {len(self.dubbed):,}')
         print(f'  └ Мусор: {junk_count:,}')
-        print(f'\nНОМЕРА: {valid_count / all_numbers_count:.0%} ({valid_count:,}/{all_numbers_count:,})\n')
         print(''.center(self.win_with, '-'))
         print(attr("reset"))  # Reset result block color.
 
