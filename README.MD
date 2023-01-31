@@ -36,7 +36,7 @@
    * Windows: установите политику исполнения:
      1. Откройте PowerShell с правами Администратора.
      2. Введите команду `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned CurrentUser` ([подробнее](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy)).
-     3. В `Properties` любого файла с расширением `ps1` измените `Open with:` на `Windows PowerShell` (C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe).
+     3. В `Properties` любого файла с расширением `ps1` измените `Open with:` на `Windows PowerShell` (`C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`).
 
 ### Требования к таблицам
 * Тип файла: MS Excel CSV (разделитель: точка с запятой)
