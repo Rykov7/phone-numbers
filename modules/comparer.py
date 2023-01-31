@@ -25,12 +25,11 @@ class Comparer(Fixer):
         self.unique = {i[0] for i in self.all_columns}
         self.all_numbers = self.unique.copy()
 
-    def greeting(self):
+    def greet(self):
         """ Program greeting. """
         print('COMPARER'.rjust(self.win_with))
         print('Выводит статистику по сходству номеров'.rjust(self.win_with))
         self.show_config()
-        print()
 
     def find_used(self):
         """ Find CSVs in "Used" folder. """

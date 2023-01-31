@@ -23,7 +23,7 @@ class Fixer:
 
     def __init__(self):
         self.win_with = WIN_WIDTH
-        self.greeting()
+        self.greet()
         self.junk, self.dubbed, = [], []
         self.valid = {}
         self.filename = self.find_new()
@@ -33,7 +33,7 @@ class Fixer:
         self.column = 0
         self.column_max = len(self.all_columns[-1])
 
-    def greeting(self):
+    def greet(self):
         """ Greet. """
         print('FIXER'.rjust(self.win_with))
         print(f'Нормализует телефонные номера в колонке: {COLUMN}'.rjust(self.win_with))
