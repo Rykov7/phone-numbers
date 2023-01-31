@@ -29,9 +29,9 @@
 `pip install wheel`
 5. Установите зависимости:
 `pip install -r requirements.txt`
-
 6. Переместите использованные таблицы в папку Used.
 7. Поместите нужную для анализа файл-таблицу в рабочую папку (папка, из которой запускаются скрипты).
+8. MacOS: разрешите исполнение файлов `chmod +x Fixer.command` и `chmod +x Comparer.command`, Windows: см. Использование
 
 ### Требования к таблицам
 
@@ -51,7 +51,7 @@
 Разрешения для разных ОС:
 * .ps1 - Windows (PowerShell Script)
 * .sh - Linux (Shell Script)
-* .command - MacOS (необходимо разрешить исполнение `chmod +x Fixer.command` и `chmod +x Comparer.command`)
+* .command - MacOS (Mac Script)
 
 ***
 ### Выбор режима логирования (отображение большого количества логов существенно замедляет обработку)
