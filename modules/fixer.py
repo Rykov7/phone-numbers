@@ -42,13 +42,12 @@ class Fixer:
         print(f'Чтение: автоопределение, запись {ENCODING_WRITE}'.rjust(self.win_with))
         print()
 
-    @staticmethod
-    def which_file(question: str, allow_range: int) -> int:
+    def which_file(self, question: str, allow_range: int) -> int:
         """ Validate file number. """
         while True:
             answer = input(question)
             if answer.isdigit() and int(answer) in range(1, allow_range + 1):
-                os.system('cls') and os.system('clear')  # clear screen Win and Unix
+                self.clear_screen()
                 return int(answer)
             if answer.lower() in ('q', 'й'):
                 sys.exit()
