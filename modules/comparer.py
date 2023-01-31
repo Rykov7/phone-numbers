@@ -2,7 +2,6 @@
 
 """ Compare tables. """
 import os
-import logging
 import sys
 from pathlib import Path
 import csv
@@ -10,10 +9,8 @@ from colored import fg, attr
 
 from fixer import Fixer
 from stopwatch import stopwatch
-from config import LOG_MODE, ENCODING_READ, DELIMITER
+from config import ENCODINGS_READ, DELIMITER
 from pie import make_plot
-
-logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("reset")}')
 
 
 class Comparer(Fixer):
@@ -63,8 +60,12 @@ class Comparer(Fixer):
         for used_table in self.used_tables:
             """ Проход по CSV-файлам в Used. """
             print(f"{used_table}")
-            with open(used_table, 'r', newline='', encoding=ENCODING_READ) as csvfile:
-                dubbed = {i[0] for i in csv.reader(csvfile, dialect='excel', delimiter=DELIMITER)}
+            for enc_read in ENCODINGS_READ:
+                try:
+                    with open(used_table, 'r', newline='', encoding=enc_read) as csvfile:
+                        dubbed = {i[0] for i in csv.reader(csvfile, dialect='excel', delimiter=DELIMITER)}
+                except UnicodeDecodeError:
+                    continue
 
             dubbed &= self.all_numbers  # Detect current overlaps.
             self.unique -= dubbed  # Detect non-overlaps.

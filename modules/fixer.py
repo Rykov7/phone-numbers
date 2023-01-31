@@ -6,15 +6,16 @@ import os
 import sys
 import re
 import logging
-import webbrowser
+import platform
+import subprocess
 from pathlib import Path
 from colored import bg, fg, attr
 
 from stopwatch import stopwatch
-from config import LOG_MODE, WIN_WIDTH, ENCODING_READ, ENCODING_WRITE, CHOP_HEAD, COLUMN, DELIMITER
+from config import LOG_LEV, WIN_WIDTH, ENCODINGS_READ, ENCODING_WRITE, COLUMN, DELIMITER
 from pie import make_plot
 
-logging.basicConfig(level=LOG_MODE, format=f'{fg("yellow")}%(message)s{attr("reset")}')
+logging.basicConfig(level=LOG_LEV, format=f'{fg("yellow")}%(message)s{attr("reset")}')
 
 
 class Fixer:
@@ -22,7 +23,6 @@ class Fixer:
 
     def __init__(self):
         self.column = COLUMN - 1
-        self.chop_head = CHOP_HEAD
         self.win_with = WIN_WIDTH
         self.greeting()
         self.junk, self.dubbed, = [], []
@@ -36,11 +36,11 @@ class Fixer:
         """ Greet. """
         print('FIXER'.rjust(self.win_with))
         print('Нормализует телефонные номера'.rjust(self.win_with))
-        print(f'Колонка с номерами: {COLUMN}, удаление начальных строк: {CHOP_HEAD}'.rjust(self.win_with))
+        print(f'Колонка: {COLUMN}'.rjust(self.win_with))
         self.show_config()
 
     def show_config(self):
-        print(f'Чтение: {ENCODING_READ}, запись {ENCODING_WRITE}'.rjust(self.win_with))
+        print(f'Чтение: автоопределение, запись {ENCODING_WRITE}'.rjust(self.win_with))
         print()
 
     def which_file(question: str, allow_range: int) -> int:
@@ -79,13 +79,12 @@ class Fixer:
 
     def open_csv(self) -> list[list]:
         """ Read CSV into list. """
-        try:
-            with open(self.filename, 'r', newline='', encoding=ENCODING_READ) as csvfile:
-                return [i for i in csv.reader(csvfile, dialect='excel', delimiter=DELIMITER) if i][self.chop_head:]
-        except UnicodeDecodeError:
-            print(f'{fg("red_3a")}ОШИБКА! Кодировка файла не соответствует настройке! '
-                  f'Текущая настройка на чтение: {ENCODING_READ}{attr("reset")}.')
-            sys.exit(1)
+        for enc_read in ENCODINGS_READ:
+            try:
+                with open(self.filename, 'r', newline='', encoding=enc_read) as csvfile:
+                    return [i for i in csv.reader(csvfile, dialect='excel', delimiter=DELIMITER) if i]
+            except UnicodeDecodeError:
+                continue
 
     @staticmethod
     def correct_number(number: str) -> str:
@@ -104,14 +103,17 @@ class Fixer:
             return f'7' + number
         return number
 
+    def run_test(self):
+        for i, row in enumerate(self.all_columns):
+            if len(row) < COLUMN:
+                del self.all_columns[i]
+
     @stopwatch
     def fix(self):
         """ Main fixer. """
-        columns_in_file = len(self.all_columns[-1])
-        if columns_in_file < self.column:
-            print(f'{fg("red_3a")}ОШИБКА! Выбрана колонка {COLUMN} из {columns_in_file}. Выхожу.{attr("reset")}')
-            sys.exit()
-        for row in self.all_columns[self.chop_head:]:
+
+        self.run_test()
+        for row in self.all_columns:
             number = row[self.column]
             number = Fixer.correct_number(number)
             other_columns = row[:self.column] + row[self.column + 1:]
@@ -171,13 +173,30 @@ class Fixer:
         else:
             print(fg("#e51c24"), end='')  # red
 
+    def open_on_complete(self):
+        path = os.path.abspath(self.dir_result + os.sep + self.basename)
+        if platform.system() == 'Windows':
+            os.startfile(path)
+        elif platform.system() == 'Darwin':
+            subprocess.Popen(['open', path])
+        else:
+            subprocess.Popen(['xdg-open', path])
+
     def print_flag(self):
         """ Print flag. """
         print()
         print(bg("cornsilk_1") + fg("cornsilk_1") + 'R' * self.win_with + attr("reset"))
         print(bg("dodger_blue_3") + fg("dodger_blue_3") + 'U' * self.win_with + attr("reset"))
         print(bg("red_3a") + fg("red_3a") + 'S' * self.win_with + attr("reset"))
-        webbrowser.open('file:///' + os.path.abspath(self.dir_result + os.sep + self.basename))
+
+        self.open_on_complete()
+
+    @staticmethod
+    def clear_screen():
+        if platform.system() == 'Windows':
+            os.system('cls')
+        else:
+            os.system('clear')
 
 
 if __name__ == '__main__':
@@ -193,4 +212,4 @@ if __name__ == '__main__':
         fixer.print_flag()
         q = input('ENTER чтобы выбрать другую таблицу (Q - выход): ')
 
-        os.system('cls') and os.system('clear')
+        fixer.clear_screen()
