@@ -42,6 +42,7 @@ class Fixer:
         print(f'Чтение: автоопределение, запись {ENCODING_WRITE}'.rjust(self.win_with))
         print()
 
+    @staticmethod
     def which_file(question: str, allow_range: int) -> int:
         """ Validate file number. """
         while True:
@@ -67,8 +68,8 @@ class Fixer:
             if len(all_files) == 1:
                 choose = 1
             else:
-                choose = Fixer.which_file(f'Выберите таблицу для обработки из 1-{len(all_files)} (Q - выход): ',
-                                          len(all_files))
+                choose = self.which_file(f'Выберите таблицу для обработки из 1-{len(all_files)} (Q - выход): ',
+                                         len(all_files))
             print(f'{all_files[choose - 1]} ({int(os.path.getsize(all_files[choose - 1]) / 1024):,} KB)')
             print(self.win_with * '.', end='\n\n')
             return str(all_files[choose - 1])
@@ -115,7 +116,7 @@ class Fixer:
         self.run_test()
         for row in self.all_columns:
             number = row[self.column]
-            number = Fixer.correct_number(number)
+            number = self.correct_number(number)
             other_columns = row[:self.column] + row[self.column + 1:]
 
             if (len(number) != 11 or not number.startswith('79') or not number.isdigit() or
