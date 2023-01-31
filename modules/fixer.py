@@ -113,7 +113,6 @@ class Fixer:
     def fix(self):
         """ Main fixer. """
 
-        self.column = self.select_number(f'Выберите колонку с номерами (1-{self.column_max}): ', self.column_max) - 1
         self.run_test()
         for row in self.all_columns:
             number = row[self.column]
@@ -208,6 +207,8 @@ if __name__ == '__main__':
     q = ''
     while q.lower() not in ('q', 'й'):
         fixer = Fixer()
+        fixer.column = fixer.select_number(f'Выберите колонку с номерами (1-{fixer.column_max}): ',
+                                           fixer.column_max) - 1
         fixer.fix()
         fixer.print_result()
         fixer.save_everything()
