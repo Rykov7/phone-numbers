@@ -72,7 +72,7 @@ class Comparer(Fixer):
             self.overlaps |= dubbed  # Detect all overlaps.
 
             curr_table_eq = len(dubbed) / (len(self.all_columns) / 100)
-            Fixer.color_range(curr_table_eq)
+            self.color_range(curr_table_eq)
             print(f'  └ СХОДСТВ: {len(dubbed):,} ({curr_table_eq:.0f}%)\n{attr("reset")}')
 
         self.unique = [i for i in self.all_columns if i[0] in self.unique]
@@ -81,7 +81,7 @@ class Comparer(Fixer):
     def result(self):
         """ Print overall result. """
         table_eq = len(self.overlaps) / (len(self.all_columns) / 100)
-        Fixer.color_range(table_eq)
+        self.color_range(table_eq)
         print('[ РЕЗУЛЬТАТ СРАВНЕНИЯ ]'.center(self.win_with, '.'))
         print(f'\nОБЩЕЕ СХОДСТВО: {len(self.overlaps):,}/{len(self.all_numbers):,} ({table_eq:.0f}%)\n')
         print(''.center(self.win_with, '-'))
@@ -90,10 +90,10 @@ class Comparer(Fixer):
     def save_everything(self):
         """ Save all CSVs. """
         os.makedirs(self.dir_result + os.sep + self.basename, exist_ok=True)
-        Fixer.save_rows(self.unique,
-                        self.dir_result + os.sep + self.basename + os.sep + self.basename + '[UNIQUE].csv')
-        Fixer.save_rows(self.overlaps,
-                        self.dir_result + os.sep + self.basename + os.sep + self.basename + '[OVERLAP].csv')
+        self.save_rows(self.unique,
+                       self.dir_result + os.sep + self.basename + os.sep + self.basename + '[UNIQUE].csv')
+        self.save_rows(self.overlaps,
+                       self.dir_result + os.sep + self.basename + os.sep + self.basename + '[OVERLAP].csv')
 
 
 if __name__ == '__main__':

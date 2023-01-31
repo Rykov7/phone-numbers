@@ -134,7 +134,7 @@ class Fixer:
         all_numbers_count = len(self.all_columns)
         junk_count = len(self.junk)
         valid_count = len(self.valid)
-        Fixer.color_range(round(100 - valid_count / (all_numbers_count / 100)))  # Set result block color.
+        self.color_range(round(100 - valid_count / (all_numbers_count / 100)))  # Set result block color.
         print('[ РЕЗУЛЬТАТ ИСПРАВЛЕНИЙ ]'.center(self.win_with, '.'))
         print(f'\nБРАК: {junk_count + len(self.dubbed):,}')
         print(f'  ├ Повторы: {len(self.dubbed):,}')
@@ -156,9 +156,9 @@ class Fixer:
     def save_everything(self):
         """ Save all CSVs. """
         os.makedirs(self.dir_result + os.sep + self.basename, exist_ok=True)
-        Fixer.save_rows(self.valid, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[valid].csv')
-        Fixer.save_rows(self.dubbed, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[dubs].csv')
-        Fixer.save_rows(self.junk, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[junk].csv')
+        self.save_rows(self.valid, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[valid].csv')
+        self.save_rows(self.dubbed, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[dubs].csv')
+        self.save_rows(self.junk, self.dir_result + os.sep + self.basename + os.sep + self.basename + '[junk].csv')
 
     @staticmethod
     def color_range(numb):
