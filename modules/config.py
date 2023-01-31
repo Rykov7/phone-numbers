@@ -12,8 +12,5 @@ WIN_WIDTH = 79
 ENCODINGS_READ = 'utf-8', 'windows-1251'
 ENCODING_WRITE = 'utf-8'
 
-""" Number of column where phone numbers are in multicolumn mode. """
-COLUMN = 6
-
 """ Delimiter for CSV. """
 DELIMITER = ';'
