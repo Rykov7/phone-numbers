@@ -66,9 +66,9 @@ class Comparer(Fixer):
                 except UnicodeDecodeError:
                     continue
 
-            dubbed &= self.all_numbers  # Detect current overlaps.
-            self.unique -= dubbed  # Detect non-overlaps.
-            self.overlaps |= dubbed  # Detect all overlaps.
+            dubbed &= self.all_numbers  # Find current overlaps.
+            self.unique -= dubbed  # Find non-overlaps.
+            self.overlaps |= dubbed  # Find all overlaps.
 
             curr_table_eq = len(dubbed) / (len(self.all_columns) / 100)
             self.color_range(curr_table_eq)
