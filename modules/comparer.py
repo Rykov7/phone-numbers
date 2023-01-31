@@ -108,4 +108,4 @@ if __name__ == '__main__':
                   comparer.filename, len(comparer.unique), len(comparer.overlaps))
         comparer.print_flag()
         q = input('ENTER чтобы выбрать другую таблицу (Q - выход): ')
-        os.system('cls') and os.system('clear')
+        Fixer.clear_screen()

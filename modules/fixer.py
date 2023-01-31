@@ -214,4 +214,4 @@ if __name__ == '__main__':
         fixer.print_flag()
         q = input('ENTER чтобы выбрать другую таблицу (Q - выход): ')
 
-        fixer.clear_screen()
+        Fixer.clear_screen()
